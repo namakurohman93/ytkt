@@ -1,0 +1,7 @@
+function loginToLobby() {
+  //
+}
+
+function loginToGameworld() {
+  //
+}

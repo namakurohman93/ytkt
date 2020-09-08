@@ -1,0 +1,28 @@
+{
+  "name": "ytkt",
+  "version": "0.0.1",
+  "description": "Your Travian: Kingdom Tool",
+  "main": "app.js",
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon bin/http"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/didadadida93/ytkt.git"
+  },
+  "keywords": [
+    "travian",
+    "kingdom",
+    "tool"
+  ],
+  "author": "didadadida93",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/didadadida93/ytkt/issues"
+  },
+  "homepage": "https://github.com/didadadida93/ytkt#readme",
+  "dependencies": {
+    "cron": "^1.8.2",
+    "express": "^4.17.1"
+  }
+}
