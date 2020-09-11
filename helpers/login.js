@@ -102,7 +102,7 @@ function loginToGameworld({ gameworldName, lobbySession, msid, cookies }) {
       })
       .then(({ headers }) => {
         let fullCookies = cookies + headers["set-cookie"].map(parseCookie).join("")
-        gameworldSession = headers.location.substring(headers.location.lastIndexOf("=") + 1)
+        let gameworldSession = headers.location.substring(headers.location.lastIndexOf("=") + 1)
 
         resolve({ msid, cookies: fullCookies, lobbySession, gameworldSession })
       })
