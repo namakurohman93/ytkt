@@ -1,5 +1,5 @@
-const qs = require('qs')
-const httpClient = require('./http-client')
+const qs = require("qs")
+const httpClient = require("./http-client")
 
 function loginToLobby({ email, password }) {
   return new Promise((resolve, reject) => {
@@ -12,11 +12,9 @@ function loginToLobby({ email, password }) {
 
         let options = {
           method: "POST",
-          headers: {
-            "content-type": "application/x-www-form-urlencoded"
-          },
+          params: { msid, msname: "msid" },
           data: qs.stringify({ email, password }),
-          params: { msid, msname: 'msid' },
+          headers: { "content-type": "application/x-www-form-urlencoded" },
           url: `https://mellon-t5.traviangames.com/authentication/login/ajax/form-validate`
         }
 
@@ -29,9 +27,9 @@ function loginToLobby({ email, password }) {
         let options = {
           method: "GET",
           maxRedirects: 0,
-          validateStatus: status => status >= 200 && status < 303,
-          params: { token, msid, msname: 'msid' },
-          url: `http://lobby.kingdoms.com/api/login.php`
+          params: { token, msid, msname: "msid" },
+          url: `http://lobby.kingdoms.com/api/login.php`,
+          validateStatus: status => status >= 200 && status < 303
         }
 
         return httpClient(options)
@@ -40,15 +38,15 @@ function loginToLobby({ email, password }) {
         let options = {
           method: "GET",
           maxRedirects: 0,
-          validateStatus: status => status >= 200 && status < 303,
-          params: { token, msid, msname: 'msid' },
-          url: headers.location
+          url: headers.location,
+          params: { token, msid, msname: "msid" },
+          validateStatus: status => status >= 200 && status < 303
         }
 
         return httpClient(options)
       })
       .then(({ headers }) => {
-        cookies = headers["set-cookie"].slice(2).map(parseCookie).join('') + `msid=${msid}; `
+        cookies = headers["set-cookie"].slice(2).map(parseCookie).join("") + `msid=${msid}; `
         lobbySession = headers.location.substring(headers.location.lastIndexOf("=") + 1)
 
         resolve({ msid, cookies, lobbySession })
@@ -67,7 +65,7 @@ function loginToGameworld({ gameworldName, lobbySession, msid, cookies }) {
 
         let options = {
           headers: { "Cookie": cookies },
-          params: { msname: 'msid', msid },
+          params: { msname: "msid", msid },
         }
 
         return httpClient.get(
@@ -83,9 +81,9 @@ function loginToGameworld({ gameworldName, lobbySession, msid, cookies }) {
         let url = data.match(regex)[1]
 
         let options = {
+          url,
           method: "GET",
-          headers: { "Cookie": cookies },
-          url
+          headers: { "Cookie": cookies }
         }
 
         return httpClient(options)
@@ -94,16 +92,16 @@ function loginToGameworld({ gameworldName, lobbySession, msid, cookies }) {
         let options = {
           method: "GET",
           maxRedirects: 0,
-          validateStatus: status => status >= 200 && status < 303,
           headers: { "Cookie": cookies },
-          params: { token, msid, msname: 'msid' },
+          params: { token, msid, msname: "msid" },
+          validateStatus: status => status >= 200 && status < 303,
           url: `https://${gameworldName}.kingdoms.com/api/login.php`
         }
 
         return httpClient(options)
       })
       .then(({ headers }) => {
-        let fullCookies = cookies + headers["set-cookie"].map(parseCookie).join('')
+        let fullCookies = cookies + headers["set-cookie"].map(parseCookie).join("")
         gameworldSession = headers.location.substring(headers.location.lastIndexOf("=") + 1)
 
         resolve({ msid, cookies: fullCookies, lobbySession, gameworldSession })
@@ -117,9 +115,7 @@ function getGameworldId({ gameworldName, lobbySession, cookies }) {
     let data = {
       action: "get",
       controller: "cache",
-      params: {
-        names: ["Collection:Avatar:"]
-      },
+      params: { names: ["Collection:Avatar:"] },
       session: lobbySession
     }
 
