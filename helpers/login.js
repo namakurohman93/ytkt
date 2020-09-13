@@ -21,8 +21,7 @@ function loginToLobby({ email, password }) {
         return httpClient(options)
       })
       .then(({ data }) => {
-        let regex = /token=(\w+)&msid/mg
-        token = regex.exec(data)[1]
+        token = getToken(data)
 
         let options = {
           method: "GET",
@@ -74,8 +73,7 @@ function loginToGameworld({ gameworldName, lobbySession, msid, cookies }) {
         )
       })
       .then(({ data }) => {
-        let regex = /token=(\w+)&msid/mg
-        token = regex.exec(data)[1]
+        token = getToken(data)
 
         regex = /\b(https?:\/\/.*?\.[a-z]{2,4}\/[^\s]*\b)/g
         let url = data.match(regex)[1]
@@ -153,6 +151,11 @@ function authenticate({ email, password, gameworld }) {
       .then(resolve)
       .catch(reject)
   })
+}
+
+function getToken(rawHtml) {
+  let regex = /token=(\w+)&msid/mg
+  return  regex.exec(rawHtml)[1]
 }
 
 module.exports = authenticate
