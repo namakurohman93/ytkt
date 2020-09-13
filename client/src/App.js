@@ -1,46 +1,16 @@
-import React, { useState, useEffect } from "react"
-import axios from "axios"
-import logo from "./logo.svg"
-import "./App.css"
+import React from "react"
 
 function App() {
-  let [email, setEmail] = useState(null)
-  let [error, setError] = useState(null)
-
-  useEffect(() => {
-    axios.get("http://localhost:3000/api/login-status")
-      .then(({ data }) => {
-        if (data.response.isLogin) setEmail(data.response.email)
-        else setEmail("Not Logged in")
-      })
-      .catch(err => setError("Error has happened"))
-  })
-
-  if (email === null) {
-    return "Loading..."
-  }
-
-  if (error !== null) {
-    return error
-  }
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
+    <div className="max-w-md mx-auto flex p-6 bg-gray-100 mt-10 rounded-lg shadow-xl">
+      <div className="ml-6 pt-1">
+        <h1 className="text-2xl text-red-800 leading-tight">
+          Tailwind and Create React App
+        </h1>
+        <p className="text-base text-gray-700 leading-normal">
+          Building apps together
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <p><code>{email}</code></p>
-      </header>
+      </div>
     </div>
   )
 }
