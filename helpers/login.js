@@ -45,8 +45,8 @@ function loginToLobby({ email, password }) {
         return httpClient(options)
       })
       .then(({ headers }) => {
-        cookies = headers["set-cookie"].slice(2).map(parseCookie).join("") + `msid=${msid}; `
-        lobbySession = headers.location.substring(headers.location.lastIndexOf("=") + 1)
+        let cookies = headers["set-cookie"].slice(2).map(parseCookie).join("") + `msid=${msid}; `
+        let lobbySession = headers.location.substring(headers.location.lastIndexOf("=") + 1)
 
         resolve({ msid, cookies, lobbySession })
       })
@@ -75,7 +75,7 @@ function loginToGameworld({ gameworldName, lobbySession, msid, cookies }) {
       .then(({ data }) => {
         token = getToken(data)
 
-        regex = /\b(https?:\/\/.*?\.[a-z]{2,4}\/[^\s]*\b)/g
+        let regex = /\b(https?:\/\/.*?\.[a-z]{2,4}\/[^\s]*\b)/g
         let url = data.match(regex)[1]
 
         let options = {
@@ -155,7 +155,7 @@ function authenticate({ email, password, gameworld }) {
 
 function getToken(rawHtml) {
   let regex = /token=(\w+)&msid/mg
-  return  regex.exec(rawHtml)[1]
+  return regex.exec(rawHtml)[1]
 }
 
 module.exports = authenticate
