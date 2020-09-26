@@ -1,25 +1,38 @@
-import React from "react"
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route
-} from "react-router-dom"
+import React, { useState, useEffect } from "react"
+import axios from "axios"
 
 import Login from "./pages/Login"
 import Home from "./pages/Home"
 
 function App() {
+  let [ email, setEmail ] = useState(null)
+  let [ isLogin, setIsLogin ] = useState(null)
+
+  useEffect(() => {
+    axios.get("http://localhost:3000/api/login-status")
+      .then(({ data }) => {
+        setEmail(data.response.email)
+        setIsLogin(data.response.isLogin)
+      })
+      .catch(err => {
+        console.log(err)
+        console.log('error happened useEffect on App')
+      })
+  }, [isLogin, email])
+
+  if (isLogin == null) return "Loading..."
+
   return (
-    <Router>
-      <Switch>
-        <Route path="/login">
-          <Login />
-        </Route>
-        <Route path="/">
-          <Home />
-        </Route>
-      </Switch>
-    </Router>
+    <>
+    {
+      isLogin
+      ? <Home />
+      : <Login
+          setEmail={val => setEmail(val)}
+          setIsLogin={val => setIsLogin(val)}
+        />
+    }
+    </>
   )
 }
 

@@ -1,16 +1,25 @@
 import React, { useState } from "react"
+import axios from "axios"
 
-export default function Login() {
-  let [ email, setEmail ] = useState('')
+export default function Login({ setEmail, setIsLogin }) {
+  let [ email, setLocalEmail ] = useState('')
   let [ password, setPassword ] = useState('')
   let [ gameworld, setGameworld ] = useState('')
 
   let submitHandler = e => {
     e.preventDefault()
-    console.log('Masuk Pak eko')
-    console.log(email)
-    console.log(password)
-    console.log(gameworld)
+    axios.post("http://localhost:3000/api/login", { email, password, gameworld })
+      .then(({ data }) => {
+        setIsLogin(true)
+        setEmail(email)
+      })
+      .catch(err => {
+        console.log(err)
+        console.log('error happened on submit')
+      })
+    setLocalEmail('')
+    setPassword('')
+    setGameworld('')
   }
 
   return (
@@ -30,7 +39,7 @@ export default function Login() {
               type="text"
               placeholder="email"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={e => setLocalEmail(e.target.value)}
             />
           </div>
           <div className="mb-4">
