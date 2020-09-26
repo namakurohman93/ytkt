@@ -2,7 +2,7 @@
   "name": "ytkt",
   "version": "0.0.1",
   "description": "Your Travian: Kingdom Tool",
-  "main": "app.js",
+  "main": "bin/http",
   "scripts": {
     "build": "cd client && yarn build && cp -R ./build/* ../public/",
     "dev": "npx concurrently -k \"NODE_ENV=development nodemon bin/http\" \"cd client && PORT=8000 yarn start\"",
@@ -27,10 +27,13 @@
   "dependencies": {
     "axios": "^0.20.0",
     "cron": "^1.8.2",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "sequelize": "^6.3.5",
+    "sqlite3": "^5.0.0"
   },
   "devDependencies": {
     "concurrently": "^5.3.0",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "nodemon": "^2.0.4"
   }
 }
