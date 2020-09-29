@@ -10,7 +10,7 @@ module.exports = function (sequelize) {
     },
     name: {
       allowNull: false,
-      type: DataTypes.STRING
+      type: DataTypes.STRING(25)
     },
     tkPlayerId: {
       allowNull: false,

@@ -5,7 +5,8 @@ const association = require("./association")
 
 const sequelize = new Sequelize({
   dialect: "sqlite",
-  storage: "./ytkt-db.sqlite"
+  storage: "./ytkt-db.sqlite",
+  logging: false
 })
 
 player(sequelize)

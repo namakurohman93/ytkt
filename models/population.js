@@ -11,10 +11,6 @@ module.exports = function (sequelize) {
     population: {
       allowNull: false,
       type: DataTypes.INTEGER
-    },
-    createdAt: {
-      allowNull: false,
-      type: DataTypes.DATE
     }
   })
 }
