@@ -29,6 +29,6 @@ function defaultHandler(req, res) {
 }
 
 app.get("/", defaultHandler)
-app.get("/*", defaultHandler)
+app.get("*", (req, res) => res.redirect("/"))
 
 module.exports = app
