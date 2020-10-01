@@ -1,26 +1,30 @@
 import React, { useState } from "react"
 import axios from "axios"
 
-export default function Login({ setEmail, setIsLogin }) {
-  let [ email, setLocalEmail ] = useState('')
-  let [ password, setPassword ] = useState('')
-  let [ gameworld, setGameworld ] = useState('')
+export default function Login({ setIsLogin }) {
+  let [ email, setEmail ] = useState("")
+  let [ password, setPassword ] = useState("")
+  let [ gameworld, setGameworld ] = useState("")
+  let [ isLoading, setIsLoading ] = useState(false)
 
   let submitHandler = e => {
+    setIsLoading(true)
     e.preventDefault()
     axios.post("http://localhost:3000/api/login", { email, password, gameworld })
       .then(({ data }) => {
         setIsLogin(true)
-        setEmail(email)
       })
       .catch(err => {
         console.log(err)
         console.log('error happened on submit')
       })
-    setLocalEmail('')
-    setPassword('')
-    setGameworld('')
+      .finally(() => setIsLoading(false))
+    setEmail("")
+    setPassword("")
+    setGameworld("")
   }
+
+  if (isLoading) return <div className="w-screen h-screen bg-blue-200">Loading...</div>
 
   return (
     <div className="w-screen h-screen bg-blue-200 p-64">
@@ -39,7 +43,7 @@ export default function Login({ setEmail, setIsLogin }) {
               type="text"
               placeholder="email"
               value={email}
-              onChange={e => setLocalEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
             />
           </div>
           <div className="mb-4">
