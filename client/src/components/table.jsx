@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import axios from "axios"
+import axios from "../config/http-client"
 
 import Row from "./row"
 
@@ -21,7 +21,7 @@ export default function Table({ setPlayerId }) {
 
   let submitHandler = e => {
     e.preventDefault()
-    axios.get(`http://localhost:3000/api/players?name=${playerName}`)
+    axios.get(`/api/players?name=${playerName}`)
       .then(({ data }) => {
         setPlayers(data)
       })
@@ -32,7 +32,7 @@ export default function Table({ setPlayerId }) {
   }
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/api/players?page=${page}`)
+    axios.get(`/api/players?page=${page}`)
       .then(({ data }) => {
         setPlayers(data)
       })

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Line, defaults } from "react-chartjs-2"
-import axios from "axios"
+import axios from "../config/http-client"
 
 defaults.global.defaultFontColor = "white"
 
@@ -18,7 +18,7 @@ export default function Player({ playerId }) {
   }
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/api/players/${playerId}`)
+    axios.get(`/api/players/${playerId}`)
       .then(({ data }) => {
         data.data = {
           labels: data.populations.map(pop => new Date(pop.createdAt).toLocaleString()),

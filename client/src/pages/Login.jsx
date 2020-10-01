@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import axios from "axios"
+import axios from "../config/http-client"
 
 export default function Login({ setIsLogin }) {
   let [ email, setEmail ] = useState("")
@@ -10,7 +10,7 @@ export default function Login({ setIsLogin }) {
   let submitHandler = e => {
     setIsLoading(true)
     e.preventDefault()
-    axios.post("http://localhost:3000/api/login", { email, password, gameworld })
+    axios.post("/api/login", { email, password, gameworld })
       .then(({ data }) => {
         setIsLogin(true)
       })
