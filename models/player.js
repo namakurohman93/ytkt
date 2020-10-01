@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize")
 
-module.exports = function (sequelize) {
+module.exports = function(sequelize) {
   sequelize.define("player", {
     id: {
       allowNull: false,

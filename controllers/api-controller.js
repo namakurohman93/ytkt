@@ -1,3 +1,4 @@
+const { Op } = require("sequelize")
 const cronJob = require("../helpers/cron-job")
 const authenticate = require("../helpers/login")
 const { getState, setState } = require("../store")
@@ -53,36 +54,31 @@ class ApiController {
   }
 
   static getAllPlayers(req, res) {
-    let page
+    let offset
+    let limit = 10
 
-    if (req.query.page == undefined) page = 0
-    else page = req.query.page * 10
+    if (req.query.page == undefined) offset = 0
+    else offset = req.query.page * limit
 
-    Player.findAll({
-      include: Population,
-      offset: page,
-      limit: 10
-    })
-      .then(players => {
-        players = players.map(player => player.toJSON())
-          .map(player => {
-            let { name, kingdomId, tribeId, tkPlayerId } = player
-            let populations = player.populations.reduce((a, pop) => pop.population + a, 0)
+    let options = { offset, limit }
 
-            return { name, kingdomId, tribeId, tkPlayerId, populations }
-          })
+    if (req.query.name) {
+      options.where = {
+        name: {
+          [Op.like]: `%${req.query.name}%`
+        }
+      }
+    }
 
-        res.send(players)
-      })
+    Player.findAll(options)
+      .then(players => res.send(players))
       .catch(err => res.send(err))
   }
 
   static getPlayer(req, res) {
     let { playerId } = req.params
 
-    Player.findByPk(playerId, {
-      include: Population
-    })
+    Player.findByPk(playerId, { include: Population })
       .then(player => res.send(player))
       .catch(err => res.send(err))
   }
