@@ -1,5 +1,7 @@
 const { player: Player, population: Population } = require("../models").models
+const { getState, setState } = require("../store")
 const { CronJob } = require("cron")
+const authenticate = require("./login")
 const requestMapData = require("./request-map-data")
 
 function addData({ name, tribeId, kingdomId, tkPlayerId, population }) {
@@ -21,6 +23,7 @@ async function task() {
     try {
       let data = await requestMapData()
       // it should check the response, if there is any error idk what todo
+      if (data.error || data.response.errors) throw { name: "AuthenticateFailed" }
 
       let cells = Object.keys(data.response["1"].region)
         .reduce((a, id) => [...a, ...data.response["1"].region[id]], [])
@@ -40,11 +43,21 @@ async function task() {
 
       notDone = false
     } catch (e) {
-      console.log(e)
-      console.log("Error happening")
+      if (e.name == "AuthenticateFailed") {
+        let { email, password, gameworld } = getState()
+        try {
+          let { msid, cookies, lobbySession, gameworldSession } = await authenticate({ email, password, gameworld })
 
-      // for now it will not try to sent request again
-      notDone = false
+          setState({ msid, cookies, lobbySession, gameworldSession })
+        } catch (e) {
+          continue
+        }
+      } else {
+        console.log(e)
+        console.log("Error happening")
+        // for now it will not try to sent request again
+        notDone = false
+      }
     }
   }
 }
