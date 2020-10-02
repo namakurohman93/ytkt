@@ -4,7 +4,7 @@
   "description": "Your Travian: Kingdom Tool",
   "main": "bin/http",
   "scripts": {
-    "build": "cd client && npm build && cp -R ./build/* ../public/",
+    "build": "cd client && npm run build && cp -R ./build/* ../public/",
     "dev": "npx concurrently -k \"NODE_ENV=development nodemon bin/http\" \"cd client && PORT=8000 yarn start\"",
     "dev-server": "NODE_ENV=development nodemon bin/http",
     "start": "node bin/http",
