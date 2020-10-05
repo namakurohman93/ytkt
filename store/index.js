@@ -1,3 +1,5 @@
+const lodash = require("lodash")
+
 let state = {
   email: "",
   password: "",
@@ -17,10 +19,7 @@ function getState() {
 }
 
 function setState(newState) {
-  state = {
-    ...state,
-    ...newState
-  }
+  state = lodash.merge(state, newState)
 }
 
 module.exports = { getState, setState }
