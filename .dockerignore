@@ -1,0 +1,5 @@
+node_modules/
+public/
+.git/
+.gitignore
+client/build/

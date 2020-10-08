@@ -4,11 +4,11 @@
   "description": "Your Travian: Kingdom Tool",
   "main": "bin/http",
   "scripts": {
-    "build": "cd client && npm run build && cp -R ./build/* ../public/",
+    "build": "cd client && npm run build",
     "dev": "npx concurrently -k \"NODE_ENV=development nodemon bin/http\" \"cd client && PORT=8000 yarn start\"",
     "dev-server": "NODE_ENV=development nodemon bin/http",
     "start": "node bin/http",
-    "install-all": "npm install && cd client && npm install && cd .."
+    "install-all": "npm install --only=prod && cd client && npm install && cd .."
   },
   "repository": {
     "type": "git",
@@ -35,7 +35,6 @@
   },
   "devDependencies": {
     "concurrently": "^5.3.0",
-    "cors": "^2.8.5",
-    "nodemon": "^2.0.4"
+    "cors": "^2.8.5"
   }
 }
