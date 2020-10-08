@@ -24,7 +24,11 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.static("public"))
 app.use("/api", require("./routes/api"))
 
-app.get("/", (req, res) => res.sendFile(path.join(__dirname), "public", "index.html"))
-app.get("*", (req, res) => res.redirect("/"))
+function defaultHandler(req, res) {
+  res.sendFile(path.join(__dirname, "public", "index.html"))
+}
+
+app.get("/", defaultHandler)
+app.get("*", defaultHandler)
 
 module.exports = app
