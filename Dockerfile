@@ -27,4 +27,6 @@ COPY --from=build /usr/client/build ./public
 
 RUN rm -rf client
 
+EXPOSE 3000
+
 CMD ["npm", "start"]
