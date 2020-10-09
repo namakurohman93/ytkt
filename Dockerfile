@@ -1,11 +1,30 @@
+# Build client side
+FROM node:lts-alpine as build
+
+WORKDIR /usr/client
+
+COPY ./client/package*.json ./
+
+RUN npm ci
+
+COPY ./client .
+
+RUN npm run build
+
+
+# Copy the result from build to production to minimize image size
 FROM node:lts-alpine
 
 WORKDIR /usr/ytkt
 
+COPY package*.json ./
+
+RUN npm ci --only=production
+
 COPY . .
 
-RUN npm run install-all && npm run build
+COPY --from=build /usr/client/build ./public
 
-EXPOSE 3000
+RUN rm -rf client
 
 CMD ["npm", "start"]

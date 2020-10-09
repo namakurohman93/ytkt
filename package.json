@@ -8,7 +8,7 @@
     "dev": "npx concurrently -k \"NODE_ENV=development nodemon bin/http\" \"cd client && PORT=8000 yarn start\"",
     "dev-server": "NODE_ENV=development nodemon bin/http",
     "start": "node bin/http",
-    "install-all": "npm install --only=prod && cd client && npm install && cd .."
+    "install-all": "npm ci --only=production && cd client && npm ci --only=production && cd .."
   },
   "repository": {
     "type": "git",

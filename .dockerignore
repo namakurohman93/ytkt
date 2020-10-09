@@ -1,5 +1,6 @@
-node_modules/
-public/
-.git/
+**/node_modules
+**/.git
 .gitignore
-client/build/
+**/build
+Dockerfile
+.dockerignore
