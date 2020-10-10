@@ -14,12 +14,37 @@ npm start
 
 Open your browser then access `localhost:3000`
 
-To custom port, use `EXPORT PORT=<desired port>`.  
-Example
+To custom port, use `export PORT=<desired port>`. Example :
 ```sh
-EXPORT PORT=80
+export PORT=80
 npm start
 ```
+
+Open your browser then access `localhost:<desired port>`
+
+## Docker
+`ytkt` come with `Dockerfile`, so you can build an image docker. Or you can pull the image docker from docker hub. You can get `ytkt` image [here](https://hub.docker.com/r/didadadida93/ytkt).
+
+#### Build an image docker and run it
+```sh
+docker build --tag ytkt .
+docker run \
+  -dp <desired port>:3000 \
+  -v <desired directory>:/usr/ytkt/data \
+  --name ytkt \
+  ytkt
+```
+
+#### Pull the image from docker hub and run it
+```sh
+docker container run \
+  -dp <desired port>:3000 \
+  -v <desired directory>:/usr/ytkt/data \
+  --name ytkt \
+  didadadida93/ytkt
+```
+
+Open your browser then access `localhost:<desired port>`
 
 ## Development
 ```sh

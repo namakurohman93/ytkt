@@ -5,7 +5,7 @@ const association = require("./association")
 
 const sequelize = new Sequelize({
   dialect: "sqlite",
-  storage: "./ytkt-db.sqlite",
+  storage: "./data/ytkt-db.sqlite",
   logging: false
 })
 
