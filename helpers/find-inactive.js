@@ -1,10 +1,10 @@
 const sequelize = require("../models")
 const { QueryTypes } = require("sequelize")
 
-function findInactive(days, hours, evolution = 0) {
+function findInactive(days, hours, offset, evolution) {
   return new Promise((resolve, reject) => {
     let query = `
-      select p.id, p.name, p."kingdomId", p.tribeId, res.evolution from
+      select p.id, p.name, res.evolution, p.tribeId, p."kingdomId" from
       (
         select
           *,
@@ -23,7 +23,7 @@ function findInactive(days, hours, evolution = 0) {
       ) as res
       inner join players as p
       on p.id = res."playerId"
-      where res."createdAt" = max and (res.evolution <= ? or res.evolution is null)
+      where res."createdAt" = max and res.evolution <= ?
       order by res."playerId"
       limit 10 offset ?
     `

@@ -1,6 +1,7 @@
 const { Op } = require("sequelize")
 const cronJob = require("../helpers/cron-job")
 const authenticate = require("../helpers/login")
+const findInactive = require("../helpers/find-inactive")
 const { getState, setState } = require("../store")
 const {
   player: Player,
@@ -9,12 +10,13 @@ const {
 
 class ApiController {
   static getStatus(req, res) {
-    let { email, password, cronJob: { isRunning } } = getState()
+    let { email, password, gameworldName, cronJob: { isRunning } } = getState()
 
     res.json({
       response: {
         isLogin: !!email && !!password,
         email,
+        gameworld: gameworldName,
         job: { isRunning }
       }
     })
@@ -46,7 +48,9 @@ class ApiController {
 
         res.json({
           response: {
-            message: "Login success!"
+            isLogin: !!email && !!password,
+            email,
+            gameworld
           }
         })
       })
@@ -54,13 +58,20 @@ class ApiController {
   }
 
   static getAllPlayers(req, res) {
-    let offset
+    let offset = 0
     let limit = 10
 
-    if (req.query.page == undefined) offset = 0
-    else offset = req.query.page * limit
+    let { page } = req.query
 
-    let options = { offset, limit }
+    if (page) offset = page * limit
+
+    let options = {
+      offset,
+      limit,
+      attributes: {
+        exclude: ["createdAt", "updatedAt"]
+      }
+    }
 
     if (req.query.name) {
       options.where = {
@@ -71,15 +82,39 @@ class ApiController {
     }
 
     Player.findAll(options)
-      .then(players => res.send(players))
+      .then(players => res.json(players))
       .catch(err => res.send(err))
   }
 
   static getPlayer(req, res) {
     let { playerId } = req.params
+    let options = {
+      include: {
+        model: Population,
+        attributes: {
+          exclude: ["id", "updatedAt"]
+        }
+      },
+      attributes: {
+        exclude: ["createdAt", "updatedAt"]
+      }
+    }
 
-    Player.findByPk(playerId, { include: Population })
-      .then(player => res.send(player))
+    Player.findByPk(playerId, options)
+      .then(player => res.json(player))
+      .catch(err => res.send(err))
+  }
+
+  static getInactive(req, res) {
+    let offset = 0
+    let { days, hours, page, evolution } = req.query
+
+    if (evolution == undefined) evolution = 0
+    if (days == undefined) days = 7
+    if (page) offset = page * 10
+
+    findInactive(days, hours, offset, evolution)
+      .then(result => res.json(result))
       .catch(err => res.send(err))
   }
 }
