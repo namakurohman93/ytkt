@@ -1,3 +1,4 @@
+const fs = require("fs")
 const { player: Player, population: Population } = require("../models").models
 const { getState, setState } = require("../store")
 const { CronJob } = require("cron")
@@ -22,8 +23,8 @@ async function task() {
   while (notDone) {
     try {
       let data = await requestMapData()
-      // it should check the response, if there is any error idk what todo
-      if (data.error || data.response.errors) throw { name: "AuthenticateFailed" }
+
+      if (data.error) throw data
 
       let cells = Object.keys(data.response["1"].region)
         .reduce((a, id) => [...a, ...data.response["1"].region[id]], [])
@@ -43,7 +44,7 @@ async function task() {
 
       notDone = false
     } catch (e) {
-      if (e.name == "AuthenticateFailed") {
+      if (e.error.message == "Authentication failed") {
         let { email, password, gameworld } = getState()
         try {
           let { msid, cookies, lobbySession, gameworldSession } = await authenticate({ email, password, gameworld })
@@ -53,7 +54,7 @@ async function task() {
           continue
         }
       } else {
-        console.log(e)
+        fs.writeFileSync(`./error-${Date.now()}.json`, JSON.stringify(e, null, 2))
         console.log("Error happening")
         // for now it will not try to sent request again
         notDone = false
