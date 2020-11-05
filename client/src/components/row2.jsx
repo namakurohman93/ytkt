@@ -1,6 +1,6 @@
 import React from "react"
 
-export default function Row({ id, name, kingdomId, tribeId, setPlayerId }) {
+export default function Row({ id, name, kingdomId, tribeId, evolution, setPlayerId }) {
   let tribes = ["", "Romans", "Teutons", "Gauls", "Nature", "Natars"]
 
   return (
@@ -22,6 +22,9 @@ export default function Row({ id, name, kingdomId, tribeId, setPlayerId }) {
       </td>
       <td className="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5">
         {tribes[tribeId]}
+      </td>
+      <td className="px-6 py-4 whitespace-no-wrap border-b text-blue-900 border-gray-500 text-sm leading-5">
+        {evolution}
       </td>
       <td className="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-500 text-sm leading-5">
         <button

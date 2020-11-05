@@ -14,14 +14,26 @@ export default function Player({ playerId }) {
     hover: {
       animationDuration: 0
     },
-    responsiveAnimationDuration: 0
+    responsiveAnimationDuration: 0,
+    tooltips: {
+      callbacks: {
+        title: function(items, data) {
+          return new Date(player.populations[items[0].index].createdAt)
+            .toLocaleString("en-US", { "hour12": false })
+        }
+      }
+    }
   }
 
   useEffect(() => {
+    let dateOptions = { "hour12": false, hour: "2-digit", minute: "2-digit" }
+
     axios.get(`/api/players/${playerId}`)
       .then(({ data }) => {
         data.data = {
-          labels: data.populations.map(pop => new Date(pop.createdAt).toLocaleString()),
+          labels: data.populations.map(pop => {
+            return new Date(pop.createdAt).toLocaleString("en-US", dateOptions)
+          }),
           datasets: [
             {
               label: "Population changes",

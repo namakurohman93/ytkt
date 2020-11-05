@@ -10,7 +10,8 @@ function App() {
   useEffect(() => {
     axios.get("/api/status")
       .then(({ data }) => {
-        setIsLogin(data.response.isLogin)
+        if (process.env.NODE_ENV === "development") setIsLogin(true)
+        else setIsLogin(data.response.isLogin)
       })
       .catch(err => {
         console.log(err)

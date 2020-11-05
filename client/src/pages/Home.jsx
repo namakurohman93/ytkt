@@ -1,9 +1,10 @@
 import React, { useState } from "react"
 import Table from "../components/table"
+import Evolution from "../components/evolution"
 import Player from "../components/player"
 
 export default function Home() {
-  let [ showTable, setShowTable ] = useState(false)
+  let [ showTable, setShowTable ] = useState({ player: false, evolution: false, button: true })
   let [ playerId, setPlayerId ] = useState(null)
 
   return (
@@ -15,10 +16,28 @@ export default function Home() {
               href="https://github.com/didadadida93/ytkt"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block py-2 text-white text-xl font-bold"
+              className="inline-block py-2 text-white text-xl font-bold pr-5"
             >
               ytkt
             </a>
+            <button
+              className="pr-5 text-white"
+              onClick={e => {
+                setShowTable({ player: true, evolution: false, button: false })
+                setPlayerId(null)
+              }}
+            >
+              Player List
+            </button>
+            <button
+              className="text-white"
+              onClick={e => {
+                setShowTable({ player: false, evolution: true, button: false })
+                setPlayerId(null)
+              }}
+            >
+              Player Evolution
+            </button>
           </div>
         </div>
       </div>
@@ -36,14 +55,17 @@ export default function Home() {
                   Collecting map data using your session. From you, for you.
                 </p>
                 {
-                  !showTable && <button onClick={e => setShowTable(true)} className="mt-6 mb-12 md:mb-0 md:mt-10 inline-block py-3 px-8 text-white bg-red-500 hover:bg-red-600 rounded-lg shadow">Let's go!</button>
+                  showTable.button && <button onClick={e => setShowTable({ player: true, evolution: false, button: false })} className="mt-6 mb-12 md:mb-0 md:mt-10 inline-block py-3 px-8 text-white bg-red-500 hover:bg-red-600 rounded-lg shadow">Let's go!</button>
                 }
               </div>
             </div>
           </div>
         </div>
         {
-          showTable && <Table setPlayerId={val => setPlayerId(val)}/>
+          showTable.player && <Table setPlayerId={val => setPlayerId(val)}/>
+        }
+        {
+          showTable.evolution && <Evolution setPlayerId={val => setPlayerId(val)}/>
         }
         {
           playerId && <Player playerId={playerId} />
