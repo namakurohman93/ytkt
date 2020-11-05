@@ -1,5 +1,3 @@
-> This is development branch, [go to master branch](https://github.com/didadadida93/ytkt/tree/master)
-
 # ytkt
 Your Travian: Kingdom Tool. This project is inspired by the [Travian Kingdom Tool](https://travian.engin9tools.com/).
 
