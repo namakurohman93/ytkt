@@ -111,9 +111,9 @@ class ApiController {
 
     if (evolution == undefined) evolution = 0
     if (days == undefined) days = 7
-    if (page) offset = page * 10
+    if (page) offset = +page * 10
 
-    findInactive(days, hours, offset, evolution)
+    findInactive(+days, +hours, +offset, +evolution)
       .then(result => res.json(result))
       .catch(err => res.send(err))
   }
