@@ -45,7 +45,7 @@ async function task() {
       notDone = false
     } catch (e) {
       if (e.error.message == "Authentication failed") {
-        let { email, password, gameworld } = getState()
+        let { email, password, gameworldName: gameworld } = getState()
         try {
           let { msid, cookies, lobbySession, gameworldSession } = await authenticate({ email, password, gameworld })
 
