@@ -1,15 +1,12 @@
 const { Op } = require("sequelize")
-const cronJob = require("../helpers/cron-job")
-const authenticate = require("../helpers/login")
-const findInactive = require("../helpers/find-inactive")
+const cronJob = require("../utilities/cron-job")
+const authenticate = require("../features/login")
+const findInactive = require("../features/find-inactive")
 const { getState, setState } = require("../store")
-const {
-  player: Player,
-  population: Population
-} = require("../models").models
+const { player: Player, population: Population } = require("../models").models
 
-class ApiController {
-  static getStatus(req, res) {
+module.exports = {
+  getStatus: function(req, res) {
     let { email, password, gameworldName, cronJob: { isRunning } } = getState()
 
     res.json({
@@ -20,9 +17,8 @@ class ApiController {
         job: { isRunning }
       }
     })
-  }
-
-  static loginHandler(req, res) {
+  },
+  loginHandler: function(req, res) {
     let { email, password, gameworld } = req.body
 
     authenticate({ email, password, gameworld })
@@ -55,9 +51,8 @@ class ApiController {
         })
       })
       .catch(err => res.send(err))
-  }
-
-  static getAllPlayers(req, res) {
+  },
+  getAllPlayers: function(req, res) {
     let offset = 0
     let limit = 10
 
@@ -84,9 +79,8 @@ class ApiController {
     Player.findAll(options)
       .then(players => res.json(players))
       .catch(err => res.send(err))
-  }
-
-  static getPlayer(req, res) {
+  },
+  getAllPlayer: function(req, res) {
     let { playerId } = req.params
     let options = {
       include: {
@@ -103,9 +97,8 @@ class ApiController {
     Player.findByPk(playerId, options)
       .then(player => res.json(player))
       .catch(err => res.send(err))
-  }
-
-  static getInactive(req, res) {
+  },
+  getInactive: function(req, res) {
     let offset = 0
     let { days, hours, page, evolution } = req.query
 
@@ -118,5 +111,3 @@ class ApiController {
       .catch(err => res.send(err))
   }
 }
-
-module.exports = ApiController
