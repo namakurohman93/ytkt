@@ -2,8 +2,8 @@ const fs = require("fs")
 const { player: Player, population: Population } = require("../models").models
 const { getState, setState } = require("../store")
 const { CronJob } = require("cron")
-const authenticate = require("./login")
-const requestMapData = require("./request-map-data")
+const authenticate = require("../features/login")
+const requestMapData = require("../features/request-map-data")
 
 function addData({ name, tribeId, kingdomId, tkPlayerId, population }) {
   return new Promise((resolve, reject) => {

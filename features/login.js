@@ -1,5 +1,5 @@
 const qs = require("qs")
-const httpClient = require("./http-client")
+const httpClient = require("../utilities/http-client")
 
 function loginToLobby({ email, password }) {
   return new Promise((resolve, reject) => {

@@ -1,6 +1,6 @@
 const { getState } = require("../store")
-const httpClient = require("./http-client")
-const regionIds = require("./region-ids")
+const httpClient = require("../utilities/http-client")
+const regionIds = require("../utilities/region-ids")
 
 module.exports = function() {
   return new Promise((resolve, reject) => {
