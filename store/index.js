@@ -1,4 +1,4 @@
-const lodash = require("lodash")
+const merge = require("lodash/fp/merge")
 
 let state = {
   email: "",
@@ -19,7 +19,7 @@ function getState() {
 }
 
 function setState(newState) {
-  state = lodash.merge(state, newState)
+  state = merge(state, newState)
 }
 
 module.exports = { getState, setState }
