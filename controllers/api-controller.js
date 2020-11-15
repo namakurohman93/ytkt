@@ -80,7 +80,7 @@ module.exports = {
       .then(players => res.json(players))
       .catch(err => res.send(err))
   },
-  getAllPlayer: function(req, res) {
+  getPlayer: function(req, res) {
     let { playerId } = req.params
     let options = {
       include: {
