@@ -1,37 +1,37 @@
-import React, { useState, useEffect } from "react"
-import axios from "./config/http-client"
+import { useState, useEffect } from "react"
+import LoginPage from "./pages/LoginPage"
+import httpClient from "./utilities/http-client"
 
-import Home from "./pages/Home"
-import Login from "./pages/Login"
+const { NODE_ENV } = process.env
 
-function App() {
-  let [ isLogin, setIsLogin ] = useState(null)
+export default function App() {
+  const [ isLogin, setIsLogin ] = useState(null)
+  const [ skipLogin, setSkipLogin ] = useState(false)
 
   useEffect(() => {
-    axios.get("/api/status")
-      .then(({ data }) => {
-        if (process.env.NODE_ENV === "development") setIsLogin(true)
-        else setIsLogin(data.response.isLogin)
-      })
-      .catch(err => {
-        console.log(err)
-        console.log('error happened useEffect on App')
-      })
-  }, [isLogin])
+    if (skipLogin && NODE_ENV === "development") setIsLogin(true)
+    else {
+      httpClient.get("/api/status")
+        .then(({ data }) => setIsLogin(data.response.isLogin))
+        .catch(err => {
+          console.log(err)
+          console.log("Error happened when checking login status")
+        })
+    }
+  }, [isLogin, skipLogin])
 
-  if (isLogin == null) return "Loading..."
+  if (isLogin === null) return "Loading..."
 
   return (
     <>
-    {
-      isLogin
-      ? <Home />
-      : <Login
-          setIsLogin={val => setIsLogin(val)}
-        />
-    }
+      {
+        isLogin
+        ? "Login true"
+        : <LoginPage
+            setIsLogin={value => setIsLogin(value)}
+            setSkipLogin={value => setSkipLogin(value)}
+          />
+      }
     </>
   )
 }
-
-export default App
