@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react"
 import LoginPage from "./pages/LoginPage"
+import HomePage from "./pages/HomePage"
+import CustomSpinner from "./components/custom-spinner"
 import httpClient from "./utilities/http-client"
 
 const { NODE_ENV } = process.env
@@ -20,18 +22,14 @@ export default function App() {
     }
   }, [isLogin, skipLogin])
 
-  if (isLogin === null) return "Loading..."
+  if (isLogin === null) return <CustomSpinner />
 
   return (
-    <>
-      {
-        isLogin
-        ? "Login true"
-        : <LoginPage
-            setIsLogin={value => setIsLogin(value)}
-            setSkipLogin={value => setSkipLogin(value)}
-          />
-      }
-    </>
+    isLogin
+    ? <HomePage />
+    : <LoginPage
+        setIsLogin={value => setIsLogin(value)}
+        setSkipLogin={value => setSkipLogin(value)}
+      />
   )
 }

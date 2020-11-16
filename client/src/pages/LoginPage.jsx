@@ -3,6 +3,7 @@ import Form from "react-bootstrap/Form"
 import Container from "react-bootstrap/Container"
 import Button from "react-bootstrap/Button"
 import Spinner from "react-bootstrap/Spinner"
+import Alert from "react-bootstrap/Alert"
 import httpClient from "../utilities/http-client"
 
 const { NODE_ENV } = process.env
@@ -12,6 +13,7 @@ export default function LoginPage({ setIsLogin, setSkipLogin }) {
   const [ password, setPassword ] = useState("")
   const [ gameworld, setGameworld ] = useState("")
   const [ loading, setLoading ] = useState(false)
+  const [ error, setError ] = useState(false)
 
   const submitHandler = event => {
     event.preventDefault()
@@ -24,10 +26,7 @@ export default function LoginPage({ setIsLogin, setSkipLogin }) {
         setGameworld("")
         setIsLogin(true)
       })
-      .catch(err => {
-        console.log(err)
-        console.log("Error happened when trying to login")
-      })
+      .catch(err => setError(true))
       .finally(() => setLoading(false))
   }
 
@@ -74,8 +73,6 @@ export default function LoginPage({ setIsLogin, setSkipLogin }) {
           loading
           ? <Button
               variant="primary"
-              onClick={submitHandler}
-              type="submit"
               disabled
             >
               <Spinner
@@ -94,6 +91,18 @@ export default function LoginPage({ setIsLogin, setSkipLogin }) {
             </Button>
         }
       </Form>
+
+      {
+        error &&
+          <Alert
+            className="mt-3"
+            variant="danger"
+            dismissible
+            onClose={() => setError(false)}
+          >
+            Make sure your credential is correct.
+          </Alert>
+      }
     </Container>
   )
 }
