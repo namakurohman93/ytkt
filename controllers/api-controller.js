@@ -50,7 +50,12 @@ module.exports = {
           }
         })
       })
-      .catch(err => res.send(err))
+      .catch(err => {
+        res.status(403).json({
+          error: true,
+          message: "Make sure your credential is correct and try again"
+        })
+      })
   },
   getAllPlayers: function(req, res) {
     let offset = 0
