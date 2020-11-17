@@ -16,6 +16,7 @@ export default function App() {
       httpClient.get("/api/status")
         .then(({ data }) => setIsLogin(data.response.isLogin))
         .catch(err => {
+          setIsLogin(false)
           console.log(err)
           console.log("Error happened when checking login status")
         })

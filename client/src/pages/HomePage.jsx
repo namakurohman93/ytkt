@@ -1,5 +1,6 @@
 import { useState } from "react"
 import Nav from "react-bootstrap/Nav"
+import Home from "../contents/home"
 
 export default function HomePage() {
   const [ eventKey, setEventKey ] = useState("home")
@@ -40,7 +41,7 @@ export default function HomePage() {
       </Nav>
 
       {
-        eventKey === "home" && <p className="mt-5">Home Content</p>
+        eventKey === "home" && <Home setEventKey={value => setEventKey(value)}/>
       }
       {
         eventKey === "inactive-players" && <p className="mt-5">Inactive Player Content</p>
