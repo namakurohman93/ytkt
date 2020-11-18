@@ -4,6 +4,7 @@ const authenticate = require("../features/login")
 const findInactive = require("../features/find-inactive")
 const { getState, setState } = require("../store")
 const { player: Player, population: Population } = require("../models").models
+const findAnimals = require("../features/find-animals")
 
 module.exports = {
   getStatus: function(req, res) {
@@ -112,6 +113,13 @@ module.exports = {
     if (page) offset = +page * 10
 
     findInactive(+days, +hours, +offset, +evolution)
+      .then(result => res.json(result))
+      .catch(err => res.send(err))
+  },
+  findAnimals: function(req, res) {
+    let animals = Object.keys(req.query)
+
+    findAnimals(animals)
       .then(result => res.json(result))
       .catch(err => res.send(err))
   }
