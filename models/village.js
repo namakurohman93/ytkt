@@ -1,8 +1,8 @@
 const { DataTypes } = require("sequelize")
 
 module.exports = function(sequelize) {
-  sequelize.define("Player", {
-    tkPlayerId: {
+  sequelize.define("Village", {
+    tkCellId: {
       allowNull: false,
       primaryKey: true,
       type: DataTypes.INTEGER
@@ -11,23 +11,19 @@ module.exports = function(sequelize) {
       allowNull: false,
       type: DataTypes.STRING(25)
     },
-    tribeId: {
+    resType: {
       allowNull: false,
-      type: DataTypes.INTEGER
+      type: DataTypes.STRING(5)
     },
-    kingdomId: {
+    playerId: {
       allowNull: false,
       type: DataTypes.INTEGER,
       references: {
-        model: "Kingdoms",
-        key: "tkKingdomId"
+        model: "Players",
+        key: "tkPlayerId"
       },
       onUpdate: "cascade",
       onDelete: "cascade"
-    },
-    isActive: {
-      allowNull: false,
-      type: DataTypes.BOOLEAN
     }
   })
 }

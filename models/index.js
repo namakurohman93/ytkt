@@ -1,6 +1,10 @@
 const { Sequelize } = require("sequelize")
+
+const kingdom = require("./kingdom.js")
 const player = require("./player")
 const population = require("./population")
+const village = require("./village")
+
 const association = require("./association")
 
 const sequelize = new Sequelize({
@@ -9,7 +13,10 @@ const sequelize = new Sequelize({
   logging: false
 })
 
+// order is important
+kingdom(sequelize)
 player(sequelize)
+village(sequelize)
 population(sequelize)
 
 association(sequelize)
