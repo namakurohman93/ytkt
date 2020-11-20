@@ -1,17 +1,29 @@
 const fs = require("fs")
-const { player: Player, population: Population } = require("../models").models
+const { models } = require("../models")
 const { getState, setState } = require("../store")
 const { CronJob } = require("cron")
 const authenticate = require("../features/login")
 const requestMapData = require("../features/request-map-data")
 
-function addData({ name, tribeId, kingdomId, tkPlayerId, population }) {
+function upsertKingdom(kingdom) {
   return new Promise((resolve, reject) => {
-    Player.findCreateFind({
-      where: { tkPlayerId },
-      defaults: { name, tribeId, kingdomId, tkPlayerId }
-    })
-      .then(([ player ]) => Population.create({ playerId: player.id, population }))
+    models.Kingdom.upsert(kingdom)
+      .then(resolve)
+      .catch(reject)
+  })
+}
+
+function upsertPlayer(player) {
+  return new Promise((resolve, reject) => {
+    models.Player.upsert(player)
+      .then(resolve)
+      .catch(reject)
+  })
+}
+
+function upsertVillage(village) {
+  return new Promise((resolve, reject) => {
+    models.Village.upsert(village)
       .then(resolve)
       .catch(reject)
   })
@@ -26,25 +38,45 @@ async function task() {
 
       if (data.error) throw data
 
-      let cells = Object.keys(data.response["1"].region)
-        .reduce((a, id) => [...a, ...data.response["1"].region[id]], [])
-        .filter(cell => cell.playerId != undefined)
+      let promises
 
-      let promises = Object.keys(data.response["1"].player)
-        .map(tkPlayerId => {
-          let { name, tribeId, kingdomId } = data.response["1"].player[tkPlayerId]
-          let population = cells
-            .filter(cell => cell.playerId == tkPlayerId)
-            .reduce((a, cell) => +cell.village.population + a, 0)
+      const players = Object.keys(data.response["1"].player).map(tkPlayerId => {
+        const { name, tribeId, kingdomId, active } = data.response["1"].player[tkPlayerId]
+        return { tkPlayerId, name, tribeId, kingdomId, isActive: active }
+      })
 
-          return addData({ name, tribeId, kingdomId, tkPlayerId, population })
+      const kingdoms = Object.keys(data.response["1"].kingdom).map(tkKingdomId => ({
+        tkKingdomId, name: data.response["1"].kingdom[tkKingdomId].tag
+      }))
+      kingdoms.push({ tkKingdomId: 0, name: "" })
+
+      const villages = []
+      const populations = []
+
+      Object.keys(data.response["1"].region).forEach(regionId => {
+        data.response["1"].region[regionId].forEach(cell => {
+          if (cell.village) {
+            const { id: tkCellId, village: { name, population }, resType, playerId } = cell
+            villages.push({ tkCellId, name, resType, playerId })
+            populations.push({ population , villageId: tkCellId })
+          }
         })
+      })
 
+      promises = kingdoms.map(upsertKingdom)
       await Promise.all(promises)
+
+      promises = players.map(upsertPlayer)
+      await Promise.all(promises)
+
+      promises = villages.map(upsertVillage)
+      await Promise.all(promises)
+
+      await models.Population.bulkCreate(populations)
 
       notDone = false
     } catch (e) {
-      if (e.error.message == "Authentication failed") {
+      if (e.error && e.error.message == "Authentication failed") {
         let { email, password, gameworldName: gameworld } = getState()
         try {
           let { msid, cookies, lobbySession, gameworldSession } = await authenticate({ email, password, gameworld })
