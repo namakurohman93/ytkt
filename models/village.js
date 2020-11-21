@@ -24,6 +24,10 @@ module.exports = function(sequelize) {
       },
       onUpdate: "cascade",
       onDelete: "cascade"
+    },
+    owner: {
+      allowNull: false,
+      type: DataTypes.INTEGER
     }
   })
 }

@@ -56,8 +56,14 @@ async function task() {
       Object.keys(data.response["1"].region).forEach(regionId => {
         data.response["1"].region[regionId].forEach(cell => {
           if (cell.village) {
-            const { id: tkCellId, village: { name, population }, resType, playerId } = cell
-            villages.push({ tkCellId, name, resType, playerId })
+            const {
+              id: tkCellId,
+              village: { name, population },
+              resType,
+              playerId,
+              owner
+            } = cell
+            villages.push({ tkCellId, name, resType, playerId, owner })
             populations.push({ population , villageId: tkCellId })
           }
         })
