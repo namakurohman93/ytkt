@@ -7,6 +7,7 @@
     "build": "cd client && npm run build && cp -R ./build/* ../public/",
     "dev": "npx concurrently -k \"NODE_ENV=development npx nodemon bin/http\" \"cd client && PORT=8000 npm start\"",
     "dev-server": "NODE_ENV=development npx nodemon bin/http",
+    "dev-client": "cd client && npm start",
     "start": "node bin/http",
     "install-all": "npm ci --only=production && cd client && npm ci"
   },
