@@ -23,7 +23,7 @@ export default function App() {
     }
   }, [isLogin, skipLogin])
 
-  if (isLogin === null) return <CustomSpinner />
+  if (isLogin === null) return <CustomSpinner message="checking..." />
 
   return (
     isLogin

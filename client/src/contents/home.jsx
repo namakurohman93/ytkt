@@ -1,7 +1,7 @@
 import Container from "react-bootstrap/Container"
 import Jumbotron from "react-bootstrap/Jumbotron"
 import Badge from "react-bootstrap/Badge"
-import "./home.style.css"
+import "../styles/home.style.css"
 
 export default function Home(props) {
   const { setEventKey } = props
@@ -19,9 +19,9 @@ export default function Home(props) {
               <a
                 href="#"
                 className="text-decoration-none"
-                onClick={() => setEventKey("inactive-players")}
+                onClick={() => setEventKey("search")}
               >
-                <span className="font-weight-light text-muted">Inactive Players </span>
+                <span className="font-weight-light text-muted">Search Player </span>
                 <Badge pill variant="info">Incoming</Badge>
               </a>
             </li>

@@ -7,11 +7,13 @@ const spinnerStyle = {
   right: "50%"
 }
 
-export default function CustomSpinner() {
+export default function CustomSpinner(props) {
+  const { message } = props
+
   return (
     <div style={spinnerStyle} className="text-center">
       <Spinner animation="grow" variant="info" />
-      <p>Checking...</p>
+      <p>{message}</p>
     </div>
   )
 }

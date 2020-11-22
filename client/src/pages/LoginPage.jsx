@@ -17,6 +17,7 @@ export default function LoginPage({ setIsLogin, setSkipLogin }) {
 
   const submitHandler = event => {
     event.preventDefault()
+    setError(false)
     setLoading(true)
 
     httpClient.post("/api/login", { email, password, gameworld })
