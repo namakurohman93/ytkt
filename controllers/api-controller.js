@@ -3,7 +3,7 @@ const cronJob = require("../utilities/cron-job")
 const authenticate = require("../features/login")
 const findInactive = require("../features/find-inactive")
 const { getState, setState } = require("../store")
-const { player: Player, population: Population } = require("../models").models
+const { models } = require("../models")
 const findAnimals = require("../features/find-animals")
 
 module.exports = {
@@ -55,6 +55,73 @@ module.exports = {
         res.status(403).json({
           error: true,
           message: "Make sure your credential is correct and try again"
+        })
+      })
+  },
+  searchPlayer: function(req, res) {
+    let { name } = req.query
+
+    if (!name.trim()) {
+      res.status(400).json({
+        error: true,
+        message: "Name is required"
+      })
+    } else {
+      let options = {
+        attributes: {
+          exclude: ["createdAt", "updatedAt", "kingdomId", "tribeId"]
+        },
+        where: {
+          name: {
+            [Op.like]: `%${name}%`
+          }
+        }
+      }
+
+      models.Player.findAll(options)
+        .then(players => res.json(players))
+        .catch(err => {
+          res.status(500).json({
+            error: true, message: "Internal error"
+          })
+        })
+    }
+  },
+  getPlayerDetail: function(req, res) {
+    let { playerId: tkPlayerId } = req.params
+
+    let options = {
+      attributes: {
+        exclude: ["createdAt", "updatedAt"]
+      },
+      include: [
+        {
+          model: models.Kingdom,
+          attributes: ["name"]
+        },
+        {
+          model: models.Village,
+          attributes: ["tkCellId", "name", "owner", "resType"],
+          include: [
+            {
+              model: models.Population,
+              attributes: ["population", "createdAt"],
+            }
+          ]
+        }
+      ],
+      where: { tkPlayerId },
+      order: [
+        [models.Village, "name", "asc"],
+        [models.Village, { model: models.Population }, "createdAt", "asc"]
+      ]
+    }
+
+    models.Player.findOne(options)
+      .then(player => res.json(player))
+      .catch(err => {
+        res.status(500).json({
+          error: true, message: "Internal error"
         })
       })
   },
