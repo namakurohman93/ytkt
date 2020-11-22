@@ -1,6 +1,7 @@
 import { useState } from "react"
 import Nav from "react-bootstrap/Nav"
 import Home from "../contents/home"
+import SearchPlayer from "../contents/search-player"
 
 export default function HomePage() {
   const [ eventKey, setEventKey ] = useState("home")
@@ -19,8 +20,8 @@ export default function HomePage() {
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="inactive-players">
-            Inactive Players
+          <Nav.Link eventKey="search">
+            Search Player
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
@@ -44,7 +45,7 @@ export default function HomePage() {
         eventKey === "home" && <Home setEventKey={value => setEventKey(value)}/>
       }
       {
-        eventKey === "inactive-players" && <p className="mt-5">Inactive Player Content</p>
+        eventKey === "search" && <SearchPlayer />
       }
       {
         eventKey === "find-animals" && <p className="mt-5">Find Animals Content</p>
