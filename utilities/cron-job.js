@@ -29,6 +29,14 @@ function upsertVillage(village) {
   })
 }
 
+function destroyVillage(tkCellId) {
+  return new Promise((resolve, reject) => {
+    models.Village.destroy({ where: { tkCellId } })
+      .then(resolve)
+      .catch(reject)
+  })
+}
+
 async function task() {
   let notDone = true
 
@@ -82,6 +90,29 @@ async function task() {
 
       await models.Population.bulkCreate(populations)
 
+      // need to clean up the village that disappear from map
+      // get tkCellId from database
+
+      let villagesFromDb = await models.Villages.findAll({
+        exclude: ["resType", "name", "playerId", "owner", "createdAt", "updatedAt"]
+      })
+
+      villagesFromDb = villagesFromDb.map(village => village.tkCellId)
+
+      // find tkCellId that exists on villagesFromDb but didn't exists on villages
+
+      const existsVillagesId = villages.map(village => village.tkCellId)
+      const deletedVillagesId = villagesFromDb.filter(village => !existsVillagesId.include(village))
+
+      // delete villages
+
+      if (deletedVillagesId.length > 0) {
+        promises = deletedVillagesId.map(destroyVillage)
+        await Promise.all(promises)
+      }
+
+      // next case when player deleting
+
       notDone = false
     } catch (e) {
       if (e.error && e.error.message == "Authentication failed") {
@@ -95,7 +126,7 @@ async function task() {
         }
       } else {
         fs.writeFileSync(`./error-${Date.now()}.json`, JSON.stringify(e, null, 2))
-        console.log("Error happening")
+        console.log(`Error happening at ${new Date()}`)
         // for now it will not try to sent request again
         notDone = false
       }
