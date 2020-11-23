@@ -35,7 +35,12 @@ export default function PlayerDetail(props) {
     tooltips: {
       callbacks: {
         title: function(items, data) {
-          return new Date(graphData.labels[items[0].index])
+          let date = player
+            .Villages[0]
+            .Populations[items[0].index]
+            .createdAt
+
+          return new Date(date)
             .toLocaleString("en-US", { "hour12": false })
         }
       }
