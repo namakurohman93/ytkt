@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react"
-import Alert from "react-bootstrap/Alert"
 import PlayerList from "./player-list"
 import PlayerDetail from "./player-detail"
 import CustomSpinner from "../components/custom-spinner"
+import CustomError from "../components/custom-error"
 import httpClient from "../utilities/http-client"
 
 export default function KingdomDetail(props) {
@@ -37,13 +37,7 @@ export default function KingdomDetail(props) {
       {
         error &&
           <div className="px-5">
-            <Alert
-              variant="danger"
-              dismissible
-              onClose={() => setError(false)}
-            >
-              Error just happened, please try again
-            </Alert>
+            <CustomError setError={val => setError(val)} />
           </div>
       }
 

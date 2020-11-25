@@ -2,10 +2,10 @@ import { useState, useEffect } from "react"
 import Container from "react-bootstrap/Container"
 import Form from "react-bootstrap/Form"
 import InputGroup from "react-bootstrap/InputGroup"
-import Alert from "react-bootstrap/Alert"
 import Spinner from "react-bootstrap/Spinner"
 import KingdomList from "./kingdom-list"
 import KingdomDetail from "./kingdom-detail"
+import CustomError from "../components/custom-error"
 import httpClient from "../utilities/http-client"
 
 export default function SearchKingdom() {
@@ -69,13 +69,7 @@ export default function SearchKingdom() {
       {
         error &&
         <div className="px-5">
-          <Alert
-            variant="danger"
-            dismissible
-            onClose={() => setError(false)}
-          >
-            Error just happened, please try again
-          </Alert>
+          <CustomError setError={val => setError(val)} />
         </div>
       }
 

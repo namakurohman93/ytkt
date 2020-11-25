@@ -2,10 +2,10 @@ import { useState, useEffect } from "react"
 import Container from "react-bootstrap/Container"
 import Form from "react-bootstrap/Form"
 import InputGroup from "react-bootstrap/InputGroup"
-import Alert from "react-bootstrap/Alert"
 import Spinner from "react-bootstrap/Spinner"
 import PlayerList from "./player-list"
 import PlayerDetail from "./player-detail"
+import CustomError from "../components/custom-error"
 import httpClient from "../utilities/http-client"
 
 export default function SearchPlayer() {
@@ -68,13 +68,7 @@ export default function SearchPlayer() {
       {
         error &&
         <div className="px-5">
-          <Alert
-            variant="danger"
-            dismissible
-            onClose={() => setError(false)}
-          >
-            Error just happened, please try again
-          </Alert>
+          <CustomError setError={val => setError(val)} />
         </div>
       }
 
