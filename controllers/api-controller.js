@@ -63,8 +63,7 @@ module.exports = {
 
     if (!name.trim()) {
       res.status(400).json({
-        error: true,
-        message: "Name is required"
+        error: true, message: "Name is required"
       })
     } else {
       let options = {
@@ -81,9 +80,7 @@ module.exports = {
       models.Player.findAll(options)
         .then(players => res.json(players))
         .catch(err => {
-          res.status(500).json({
-            error: true, message: "Internal error"
-          })
+          res.status(500).json({ error: true, message: "Internal error" })
         })
     }
   },
@@ -120,9 +117,80 @@ module.exports = {
     models.Player.findOne(options)
       .then(player => res.json(player))
       .catch(err => {
-        res.status(500).json({
-          error: true, message: "Internal error"
+        res.status(500).json({ error: true, message: "Internal error" })
+      })
+  },
+  searchKingdom: function(req, res) {
+    let { name } = req.query
+
+    if (!name.trim()) {
+      res.status(400).json({
+        error: true, message: "Kingdom name is required"
+      })
+    } else {
+      let options = {
+        attributes: {
+          exclude: ["createdAt", "updatedAt"]
+        },
+        include: [
+          {
+            model: models.Player,
+            attributes: ["tkPlayerId"]
+          }
+        ],
+        where: {
+          name: {
+            [Op.like]: `%${name}%`
+          }
+        }
+      }
+
+      models.Kingdom.findAll(options)
+        .then(kingdoms => {
+          kingdoms = kingdoms.map(kingdom => kingdom.toJSON())
+          kingdoms.forEach(kingdom => {
+            kingdom.Players = kingdom.Players.length
+          })
+
+          res.json(kingdoms)
         })
+        .catch(err => {
+          res.status(500).json({ error: true, message: "Internal error" })
+        })
+    }
+  },
+  getKingdomDetail: function(req, res) {
+    let { kingdomId } = req.params
+
+    let options = {
+      attributes: {
+        exclude: ["createdAt", "updatedAt"]
+      },
+      include: [
+        {
+          model: models.Player,
+          attributes: ["tkPlayerId", "name", "isActive"],
+          include: [
+            {
+              model: models.Village,
+              attributes: ["owner"]
+            }
+          ]
+        }
+      ]
+    }
+
+    models.Kingdom.findByPk(kingdomId, options)
+      .then(kingdom => {
+        kingdom = kingdom.toJSON()
+        kingdom.Players.forEach(player => {
+          player.Villages = player.Villages.length
+        })
+
+        res.json(kingdom)
+      })
+      .catch(err => {
+        res.status(500).json({ error: true, message: "Internal error" })
       })
   },
   getAllPlayers: function(req, res) {
