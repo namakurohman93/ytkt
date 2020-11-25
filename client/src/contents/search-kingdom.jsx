@@ -4,32 +4,33 @@ import Form from "react-bootstrap/Form"
 import InputGroup from "react-bootstrap/InputGroup"
 import Alert from "react-bootstrap/Alert"
 import Spinner from "react-bootstrap/Spinner"
-import PlayerList from "./player-list"
-import PlayerDetail from "./player-detail"
+import KingdomList from "./kingdom-list"
+import KingdomDetail from "./kingdom-detail"
 import httpClient from "../utilities/http-client"
 
-export default function SearchPlayer() {
-  const [ playerName, setPlayerName ] = useState("")
-  const [ error, setError ] = useState(false)
+export default function SearchKingdom() {
+  const [ kingdomName, setKingdomName ] = useState("")
+  const [ kingdomList, setKingdomList ] = useState(null)
   const [ loading, setLoading ] = useState(false)
-  const [ playerList, setPlayerList ] = useState(null)
-  const [ playerId, setPlayerId ] = useState(null)
-  const [ showPlayer, setShowPlayer ] = useState(false)
+  const [ error, setError ] = useState(false)
+  const [ kingdomId, setKingdomId ] = useState(null)
+  const [ showKingdom, setShowKingdom ] = useState(false)
 
   useEffect(() => {
-    if (playerId !== null) setShowPlayer(true)
-  }, [playerId])
+    if (kingdomId !== null) setShowKingdom(true)
+  }, [kingdomId])
 
   const submitHandler = event => {
     event.preventDefault()
-    setPlayerList(null)
+    setKingdomList(null)
     setError(false)
     setLoading(true)
-    setShowPlayer(false)
+    setKingdomId(null)
+    setShowKingdom(false)
 
-    if (playerName.trim().length !== 0) {
-      httpClient.get(`/api/players?name=${playerName}`)
-        .then(({ data }) => setPlayerList(data))
+    if (kingdomName.trim().length !== 0) {
+      httpClient.get(`/api/kingdoms?name=${kingdomName}`)
+        .then(({ data }) => setKingdomList(data))
         .catch(err => setError(true))
         .finally(() => setLoading(false))
     } else setLoading(false)
@@ -38,8 +39,8 @@ export default function SearchPlayer() {
   return (
     <Container>
       <div className="p-5">
-        <h1 className="text-info mb-0">Search Player</h1>
-        <p className="font-weight-lighter text-muted font-italic">that you think is inactive</p>
+        <h1 className="text-info mb-0">Search Kingdom</h1>
+        <p className="font-weight-lighter text-muted font-italic">so you can find inactive member</p>
       </div>
 
       <Form className="px-5" onSubmit={submitHandler}>
@@ -51,14 +52,14 @@ export default function SearchPlayer() {
                 ? <InputGroup.Text className="px-5">
                     <Spinner animation="border" role="status" as="span" size="sm" />
                   </InputGroup.Text>
-                : <InputGroup.Text>Player Name</InputGroup.Text>
+                : <InputGroup.Text>Kingdom Name</InputGroup.Text>
               }
             </InputGroup.Prepend>
             <Form.Control
               type="text"
               placeholder="type name then press enter..."
-              onChange={e => setPlayerName(e.target.value)}
-              style={ playerName.length > 0 ? { fontStyle: "normal" } : { fontStyle: "italic" } }
+              onChange={e => setKingdomName(e.target.value)}
+              style={ kingdomName.length > 0 ? { fontStyle: "normal" } : { fontStyle: "italic" } }
               disabled={loading}
             />
           </InputGroup>
@@ -79,21 +80,21 @@ export default function SearchPlayer() {
       }
 
       {
-        !showPlayer && playerList && playerList.length === 0 &&
+        !showKingdom && kingdomList && kingdomList.length === 0 &&
           <div className="px-5">
-            <p className="text-danger text-weight-lighter">no player found</p>
+            <p className="text-danger text-weight-lighter">no kingdom found</p>
           </div>
       }
       {
-        !showPlayer && playerList && playerList.length > 0 && 
-          <PlayerList
-            playerList={playerList}
-            setPlayerId={val => setPlayerId(val)}
+        !showKingdom && kingdomList && kingdomList.length > 0 && 
+          <KingdomList
+            kingdomList={kingdomList}
+            setKingdomId={val => setKingdomId(val)}
           />
       }
 
       {
-        showPlayer && <PlayerDetail playerId={playerId} />
+        showKingdom && <KingdomDetail kingdomId={kingdomId} />
       }
     </Container>
   )

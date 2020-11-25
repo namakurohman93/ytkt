@@ -22,7 +22,15 @@ export default function Home(props) {
                 onClick={() => setEventKey("search")}
               >
                 <span className="font-weight-light text-muted">Search Player </span>
-                <Badge pill variant="info">Incoming</Badge>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="text-decoration-none"
+                onClick={() => setEventKey("search-kingdom")}
+              >
+                <span className="font-weight-light text-muted">Search Kingdom </span>
               </a>
             </li>
             <li>
