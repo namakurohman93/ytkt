@@ -240,16 +240,27 @@ module.exports = {
       .catch(err => res.send(err))
   },
   getInactive: function(req, res) {
-    let offset = 0
-    let { days, hours, page, evolution } = req.query
+    let offset
+    let limit = 10
+    let { x, y, evolution, day, hour, page } = req.query
 
-    if (evolution == undefined) evolution = 0
-    if (days == undefined) days = 7
-    if (page) offset = +page * 10
+    if (x == undefined || x == "") x = 0
+    if (y == undefined || y == "") y = 0
+    if (evolution == undefined || evolution == "") evolution = 0
+    if (day == undefined || day == "") day = 1
+    if (hour == undefined || hour == "") hour = 0
+    if (page == undefined || page == "") offset = 0
+    else offset = +page * limit
 
-    findInactive(+days, +hours, +offset, +evolution)
-      .then(result => res.json(result))
-      .catch(err => res.send(err))
+    res.send({ x, y, evolution, day, hour, offset })
+
+    /*
+     * models.Village.findAll({
+     *   //
+     * })
+     *   .then()
+     *   .catch()
+     */
   },
   findAnimals: function(req, res) {
     let animals = Object.keys(req.query)
