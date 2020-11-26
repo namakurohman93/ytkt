@@ -3,6 +3,7 @@ import Nav from "react-bootstrap/Nav"
 import Home from "../contents/home"
 import SearchPlayer from "../contents/search-player"
 import SearchKingdom from "../contents/search-kingdom"
+import SearchInactive from "../contents/search-inactive"
 
 export default function HomePage() {
   const [ eventKey, setEventKey ] = useState("home")
@@ -31,6 +32,11 @@ export default function HomePage() {
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
+          <Nav.Link eventKey="search-inactive">
+            Search Inactive
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
           <Nav.Link eventKey="find-animals">
             Find Animals
           </Nav.Link>
@@ -55,6 +61,9 @@ export default function HomePage() {
       }
       {
         eventKey === "search-kingdom" && <SearchKingdom />
+      }
+      {
+        eventKey === "search-inactive" && <SearchInactive />
       }
       {
         eventKey === "find-animals" && <p className="mt-5">Find Animals Content</p>
