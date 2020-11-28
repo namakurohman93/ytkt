@@ -59,7 +59,7 @@ export default function KingdomDetail(props) {
                 className="text-decoration-none"
                 onClick={() => setPlayerId(null)}
               >
-                <h3>Back</h3>
+                <h3>⬅️ Back</h3>
               </a>
             </div>
 

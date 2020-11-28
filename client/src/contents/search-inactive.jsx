@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Container from "react-bootstrap/Container"
 import Form from "react-bootstrap/Form"
 import Col from "react-bootstrap/Col"
 import Button from "react-bootstrap/Button"
-import Spinner from "react-bootstrap/Spinner"
+import InputGroup from "react-bootstrap/InputGroup"
+import InactiveList from "./inactive-list"
+import CustomError from "../components/custom-error"
+import CustomSpinner from "../components/custom-spinner"
 import httpClient from "../utilities/http-client"
 import "../styles/search-inactive.style.css"
 
@@ -13,9 +16,13 @@ export default function SearchInactive() {
     evolution: "", hour: "", day: "",
     validated: false, loading: false
   })
+  const [ inactiveList, setInactiveList ] = useState([])
+  const [ page, setPage ] = useState(1)
+  const [ error, setError ] = useState(false)
 
   const submitHandler = event => {
     event.preventDefault()
+    setInactiveList([])
 
     if (
       formData.x === "" ||
@@ -32,12 +39,9 @@ export default function SearchInactive() {
       httpClient.get(`/api/inactive`, {
         params: { x, y, evolution, hour, day }
       })
-        .then(({ data }) => {
-          console.log(data)
-        })
-        .catch(err => {
-          console.log(err)
-        })
+        .then(({ data }) => setInactiveList(data))
+        .catch(err => setError(true))
+        .finally(() => setFormData({ ...formData, loading: false }))
     }
   }
 
@@ -54,36 +58,42 @@ export default function SearchInactive() {
         </Form.Label>
         <Form.Row className="w-25">
           <Form.Group as={Col}>
-            <Form.Control
-              required
-              size="sm"
-              type="number"
-              placeholder="x"
-              onChange={e => setFormData({
-                ...formData,
-                x: e.target.value,
-                validated: false
-              })}
-              style={ formData.x.length > 0 ? { fontStyle: "normal" } : { fontStyle: "italic" } }
-              disabled={formData.loading}
-            />
+            <InputGroup size="sm">
+              <InputGroup.Prepend>
+                <InputGroup.Text><i>x</i></InputGroup.Text>
+              </InputGroup.Prepend>
+              <Form.Control
+                required
+                size="sm"
+                type="number"
+                onChange={e => setFormData({
+                  ...formData,
+                  x: e.target.value,
+                  validated: false
+                })}
+                disabled={formData.loading}
+              />
+            </InputGroup>
             <Form.Control.Feedback type="invalid">Required!</Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group as={Col}>
-            <Form.Control
-              required
-              size="sm"
-              type="number"
-              placeholder="y"
-              onChange={e => setFormData({
-                ...formData,
-                y: e.target.value,
-                validated: false
-              })}
-              style={ formData.y.length > 0 ? { fontStyle: "normal" } : { fontStyle: "italic" } }
-              disabled={formData.loading}
-            />
+            <InputGroup size="sm">
+              <InputGroup.Prepend>
+                <InputGroup.Text><i>y</i></InputGroup.Text>
+              </InputGroup.Prepend>
+              <Form.Control
+                required
+                size="sm"
+                type="number"
+                onChange={e => setFormData({
+                  ...formData,
+                  y: e.target.value,
+                  validated: false
+                })}
+                disabled={formData.loading}
+              />
+            </InputGroup>
             <Form.Control.Feedback type="invalid">Required!</Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
@@ -112,63 +122,87 @@ export default function SearchInactive() {
 
           <Form.Group as={Col}>
             <Form.Label className="text-muted">Over</Form.Label>
-            <Form.Control
-              required
-              size="sm"
-              type="number"
-              placeholder="hours"
-              onChange={e => setFormData({
-                ...formData,
-                hour: e.target.value,
-                validated: false
-              })}
-              style={ formData.hour.length > 0 ? { fontStyle: "normal" } : { fontStyle: "italic" } }
-              disabled={formData.loading}
-            />
+            <InputGroup size="sm">
+              <Form.Control
+                required
+                size="sm"
+                type="number"
+                onChange={e => setFormData({
+                  ...formData,
+                  day: e.target.value,
+                  validated: false
+                })}
+                disabled={formData.loading}
+              />
+              <InputGroup.Prepend>
+                <InputGroup.Text>Day</InputGroup.Text>
+              </InputGroup.Prepend>
+            </InputGroup>
             <Form.Control.Feedback type="invalid">Required!</Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group as={Col}>
             <Form.Label>&nbsp;</Form.Label>
-            <Form.Control
-              required
-              size="sm"
-              type="number"
-              placeholder="days"
-              onChange={e => setFormData({
-                ...formData,
-                day: e.target.value,
-                validated: false
-              })}
-              style={ formData.day.length > 0 ? { fontStyle: "normal" } : { fontStyle: "italic" } }
-              disabled={formData.loading}
-            />
+            <InputGroup size="sm">
+              <Form.Control
+                required
+                size="sm"
+                type="number"
+                onChange={e => setFormData({
+                  ...formData,
+                  hour: e.target.value,
+                  validated: false
+                })}
+                disabled={formData.loading}
+              />
+              <InputGroup.Prepend>
+                <InputGroup.Text>Hour</InputGroup.Text>
+              </InputGroup.Prepend>
+            </InputGroup>
             <Form.Control.Feedback type="invalid">Required!</Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
 
-        {
-          formData.loading
-          ? <Button
-              variant="info"
-              disabled
-            >
-              <Spinner
-                animation="border"
-                role="status"
-                as="span"
-                size="sm"
-              /> Fetching...
-            </Button>
-          : <Button
-              variant="info"
-              onClick={submitHandler}
-              type="submit"
-            >
-              Search
-            </Button>
-        }
+        <Button
+          variant="info"
+          onClick={submitHandler}
+          type="submit"
+          disabled={formData.loading}
+        >
+          Search
+        </Button>
       </Form>
+
+      {
+        formData.loading &&
+          <div className="mt-5">
+            <CustomSpinner message="fetching..." />
+          </div>
+      }
+
+      {
+        error &&
+          <div className="px-5">
+            <CustomError setError={val => setError(val)} />
+          </div>
+      }
+
+      {
+        inactiveList.length > 0 &&
+          <div className="ml-5 mt-5 mb-5">
+            <hr />
+            <h2 className="text-info">Result</h2>
+            <InactiveList
+              inactiveList={inactiveList}
+              setInactiveList={val => setInactiveList(val)}
+              x={formData.x}
+              y={formData.y}
+              evolution={formData.evolution}
+              hour={formData.hour}
+              day={formData.day}
+            />
+          </div>
+      }
     </Container>
   )
 }
