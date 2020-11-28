@@ -36,14 +36,16 @@ module.exports = {
           gameworldSession
         })
 
-        let { cronJob: cron } = getState()
-
-        if (!cron.isRunning) {
-          let job = cronJob()
-          job.start()
-
-          setState({ cronJob: { isRunning: true, job } })
-        }
+        /*
+         * let { cronJob: cron } = getState()
+         *
+         * if (!cron.isRunning) {
+         *   let job = cronJob()
+         *   job.start()
+         *
+         *   setState({ cronJob: { isRunning: true, job } })
+         * }
+         */
 
         res.json({
           response: {

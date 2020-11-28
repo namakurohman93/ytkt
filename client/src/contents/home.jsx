@@ -14,14 +14,15 @@ export default function Home(props) {
 
         <div className="mt-5">
           <h2 className="text-info">Features</h2>
-          <ul style={{ listStyle: ">> " }}>
+          <ul>
             <li>
               <a
                 href="#"
                 className="text-decoration-none"
                 onClick={() => setEventKey("search")}
               >
-                <span className="font-weight-light text-muted">Search Player</span>
+                <span className="font-weight-light text-muted">Search Player </span>
+                <Badge pill variant="info">Incoming</Badge>
               </a>
             </li>
             <li>
@@ -30,7 +31,8 @@ export default function Home(props) {
                 className="text-decoration-none"
                 onClick={() => setEventKey("search-kingdom")}
               >
-                <span className="font-weight-light text-muted">Search Kingdom</span>
+                <span className="font-weight-light text-muted">Search Kingdom </span>
+                <Badge pill variant="info">Incoming</Badge>
               </a>
             </li>
             <li>
@@ -39,7 +41,7 @@ export default function Home(props) {
                 className="text-decoration-none"
                 onClick={() => setEventKey("search-inactive")}
               >
-                <span className="font-weight-light text-muted">Search Inactive</span>
+                <span className="font-weight-light text-muted">Search Inactive </span>
                 <Badge pill variant="info">Incoming</Badge>
               </a>
             </li>

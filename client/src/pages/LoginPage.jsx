@@ -25,7 +25,7 @@ export default function LoginPage({ setIsLogin, setSkipLogin }) {
         setEmail("")
         setPassword("")
         setGameworld("")
-        setIsLogin(true)
+        setIsLogin(data.response.isLogin)
       })
       .catch(err => setError(true))
       .finally(() => setLoading(false))
