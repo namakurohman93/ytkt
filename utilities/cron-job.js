@@ -94,7 +94,7 @@ async function task() {
       // need to clean up the village that disappear from map
       // get tkCellId from database
 
-      let villagesFromDb = await models.Villages.findAll({
+      let villagesFromDb = await models.Village.findAll({
         exclude: ["resType", "name", "playerId", "owner", "createdAt", "updatedAt"]
       })
 
@@ -128,6 +128,7 @@ async function task() {
       } else {
         fs.writeFileSync(`./error-${Date.now()}.json`, JSON.stringify(e, null, 2))
         console.log(`Error happening at ${new Date()}`)
+        console.log(e)
         // for now it will not try to sent request again
         notDone = false
       }
