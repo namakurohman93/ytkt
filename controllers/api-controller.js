@@ -1,5 +1,7 @@
 const { Op } = require("sequelize")
 const cronJob = require("../utilities/cron-job")
+const createDate = require("../utilities/create-date")
+const distance = require("../utilities/distance")
 const authenticate = require("../features/login")
 const findInactive = require("../features/find-inactive")
 const { getState, setState } = require("../store")
@@ -193,55 +195,7 @@ module.exports = {
         res.status(500).json({ error: true, message: "Internal error" })
       })
   },
-  getAllPlayers: function(req, res) {
-    let offset = 0
-    let limit = 10
-
-    let { page } = req.query
-
-    if (page) offset = page * limit
-
-    let options = {
-      offset,
-      limit,
-      attributes: {
-        exclude: ["createdAt", "updatedAt"]
-      }
-    }
-
-    if (req.query.name) {
-      options.where = {
-        name: {
-          [Op.like]: `%${req.query.name}%`
-        }
-      }
-    }
-
-    Player.findAll(options)
-      .then(players => res.json(players))
-      .catch(err => res.send(err))
-  },
-  getPlayer: function(req, res) {
-    let { playerId } = req.params
-    let options = {
-      include: {
-        model: Population,
-        attributes: {
-          exclude: ["id", "updatedAt"]
-        }
-      },
-      attributes: {
-        exclude: ["createdAt", "updatedAt"]
-      }
-    }
-
-    Player.findByPk(playerId, options)
-      .then(player => res.json(player))
-      .catch(err => res.send(err))
-  },
   getInactive: function(req, res) {
-    let offset
-    let limit = 10
     let { x, y, evolution, day, hour, page } = req.query
 
     if (x == undefined || x == "") x = 0
@@ -249,18 +203,82 @@ module.exports = {
     if (evolution == undefined || evolution == "") evolution = 0
     if (day == undefined || day == "") day = 1
     if (hour == undefined || hour == "") hour = 0
-    if (page == undefined || page == "") offset = 0
-    else offset = +page * limit
 
-    res.send({ x, y, evolution, day, hour, offset })
+    let options = {
+      where: {
+        tkPlayerId: {
+          [Op.not]: 1
+        },
+        "$Villages.Populations.createdAt$": {
+          [Op.between]: [createDate(day, hour), createDate()]
+        }
+      },
+      include: [
+        {
+          model: models.Village,
+          attributes: ["tkCellId", "name", "resType", "owner"],
+          include: [
+            {
+              model: models.Population,
+              attributes: ["population", "createdAt"]
+            }
+          ]
+        },
+        {
+          model: models.Kingdom,
+          attributes: ["name"]
+        }
+      ],
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "kingdomId"]
+      }
+    }
 
-    /*
-     * models.Village.findAll({
-     *   //
-     * })
-     *   .then()
-     *   .catch()
-     */
+    models.Player.findAll(options)
+      .then(players => {
+        const villages = players.map(player => player.toJSON())
+          .reduce((a, player) => {
+            let result = []
+
+            player.Villages.forEach(village => {
+              village.Populations.forEach((population, idx) => {
+                if (!result[idx]) result[idx] = 0
+                result[idx] += population.population
+              })
+            })
+
+            let playerEvolution = result[result.length - 1] - result[0]
+
+            return [
+              ...a,
+              ...player.Villages.map(village => ({
+                ...village,
+                villagePopulation: village.Populations[village.Populations.length - 1].population,
+                player,
+                playerEvolution
+              }))
+            ]
+          }, [])
+          .map(village => ({
+            tkCellId: village.tkCellId,
+            name: village.name,
+            resType: village.resType,
+            owner: village.owner,
+            population: village.villagePopulation,
+            playerName: village.player.name,
+            tribeId: village.player.tribeId,
+            isActive: village.player.isActive,
+            kingdom: village.player.Kingdom.name,
+            playerEvolution: village.playerEvolution
+          }))
+          .sort((a, b) => distance(a.tkCellId, x, y) - distance(b.tkCellId, x, y))
+          .filter(village => village.playerEvolution <= evolution)
+
+        res.send(villages)
+      })
+      .catch(err => {
+        res.status(500).json({ error: true, message: "Internal error" })
+      })
   },
   findAnimals: function(req, res) {
     let animals = Object.keys(req.query)
