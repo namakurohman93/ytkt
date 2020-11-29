@@ -15,7 +15,7 @@ export default function FindAnimals() {
   const [ error, setError ] = useState(false)
 
   const animalsName = [
-    "", "🐭", "🕷️", "🐍", "🦇", "Boar 🐗",
+    "", "🐭", "🕷️", "🐍", "🦇", "🐗",
     "🐺", "🐻", "🐊", "🐯", "🐘"
   ]
 
