@@ -28,9 +28,9 @@ module.exports = function(animals) {
   return new Promise((resolve, reject) => {
     requestMapData()
       .then(({ response }) => {
-        const oasisStatus = "3" // "1" Occupied, "3" Unoccupied
+        let oasisStatus = "3" // "1" Occupied, "3" Unoccupied
 
-        const oases = Object.keys(response["1"].region)
+        let oases = Object.keys(response["1"].region)
           .reduce((a, regionId) => [...a, ...response["1"].region[regionId]], [])
           .filter(cell => cell.oasis && cell.oasis.oasisStatus == oasisStatus)
           .map(oasis => `MapDetails:${oasis.id}`)
@@ -38,7 +38,7 @@ module.exports = function(animals) {
         return getCache({ names: oases })
       })
       .then(data => {
-        const result = data.cache.map(cell => {
+        let result = data.cache.map(cell => {
           return {
             id: cell.data.troops.villageId,
             units: cell.data.troops.units

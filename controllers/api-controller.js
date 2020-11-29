@@ -1,35 +1,35 @@
-const { Op } = require("sequelize")
+// const { Op } = require("sequelize")
 const cronJob = require("../utilities/cron-job")
 const createDate = require("../utilities/create-date")
 const distance = require("../utilities/distance")
 const authenticate = require("../features/login")
 const findInactive = require("../features/find-inactive")
 const { getState, setState } = require("../store")
-const { models } = require("../models")
+// const { models } = require("../models")
 const findAnimals = require("../features/find-animals")
 
 module.exports = {
   getStatus: function(req, res) {
-    let { email, password, gameworldName, cronJob: { isRunning } } = getState()
+    let { email, password, gameworldName } = getState()
 
     res.json({
       response: {
         isLogin: !!email && !!password,
         email,
         gameworld: gameworldName,
-        job: { isRunning }
       }
     })
   },
   loginHandler: function(req, res) {
     let { email, password, gameworld } = req.body
+    gameworld = gameworld.toLowerCase()
 
     authenticate({ email, password, gameworld })
       .then(({ msid, cookies, lobbySession, gameworldSession }) => {
         setState({
           email,
           password,
-          gameworldName: gameworld.toLowerCase(),
+          gameworldName: gameworld,
           msid,
           cookies,
           lobbySession,
@@ -51,7 +51,7 @@ module.exports = {
           response: {
             isLogin: !!email && !!password,
             email,
-            gameworld
+            gameworld: gameworld
           }
         })
       })
@@ -285,8 +285,15 @@ module.exports = {
   findAnimals: function(req, res) {
     let animals = Object.keys(req.query)
 
-    findAnimals(animals)
-      .then(result => res.json(result))
-      .catch(err => res.send(err))
+    if (animals.length == 0) {
+      res.status(400).json({ error: true, message: "Animal is required" })
+    } else {
+      findAnimals(animals)
+        .then(result => res.json(result))
+        .catch(err => {
+          res.status(500).json({ error: true, message: "Internal error" })
+        })
+    }
+
   }
 }
