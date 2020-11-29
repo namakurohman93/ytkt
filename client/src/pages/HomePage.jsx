@@ -4,6 +4,7 @@ import Home from "../contents/home"
 import SearchPlayer from "../contents/search-player"
 import SearchKingdom from "../contents/search-kingdom"
 import SearchInactive from "../contents/search-inactive"
+import FindAnimals from "../contents/find-animals"
 
 export default function HomePage() {
   const [ eventKey, setEventKey ] = useState("home")
@@ -66,7 +67,7 @@ export default function HomePage() {
         eventKey === "search-inactive" && <SearchInactive />
       }
       {
-        eventKey === "find-animals" && <p className="mt-5">Find Animals Content</p>
+        eventKey === "find-animals" && <FindAnimals />
       }
       {
         eventKey === "find-cropper" && <p className="mt-5">Find Cropper Content</p>

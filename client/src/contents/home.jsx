@@ -52,7 +52,6 @@ export default function Home(props) {
                 onClick={() => setEventKey("find-animals")}
               >
                 <span className="font-weight-light text-muted">Find Animals </span>
-                <Badge pill variant="info">Incoming</Badge>
               </a>
             </li>
             <li>
