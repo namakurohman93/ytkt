@@ -6,3 +6,4 @@ Dockerfile
 .dockerignore
 **/*.sqlite
 ./public
+.env
