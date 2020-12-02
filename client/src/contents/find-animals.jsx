@@ -143,6 +143,7 @@ export default function FindAnimals() {
           variant="info"
           onClick={submitHandler}
           disabled={loading}
+          size="sm"
         >
           Find
         </Button>

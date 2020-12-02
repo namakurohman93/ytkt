@@ -168,6 +168,7 @@ export default function SearchInactive() {
           onClick={submitHandler}
           type="submit"
           disabled={formData.loading}
+          size="sm"
         >
           Search
         </Button>
