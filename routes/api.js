@@ -9,5 +9,6 @@ router.get("/kingdoms", ApiController.searchKingdom)
 router.get("/kingdoms/:kingdomId", ApiController.getKingdomDetail)
 router.get("/inactive", ApiController.getInactive)
 router.get("/animals", ApiController.findAnimals)
+router.get("/cropper", ApiController.findCropper)
 
 module.exports = router
