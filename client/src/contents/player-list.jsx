@@ -22,7 +22,7 @@ export default function PlayerList(props) {
                     onClick={() => setPlayerId(player.tkPlayerId)}
                   >
                     <span className="text-info">
-                      {player.name} { player.isActive ? "" : "💤" }
+                      {player.name} {player.isActive ? "" : "💤"}
                     </span>
                   </a>
                 </td>

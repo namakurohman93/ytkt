@@ -12,11 +12,12 @@ function getCache(params) {
       params,
       session: gameworldSession
     }
-    let options = { headers: { "Cookie": cookies } }
+    let options = { headers: { Cookie: cookies } }
     let date = Math.floor(Number(Date.now()) / 1000)
     let url = `https://${gameworld}.kingdoms.com/api/?c=cache&a=get&t${date}=`
 
-    httpClient.post(url, payload, options)
+    httpClient
+      .post(url, payload, options)
       .then(({ data }) => resolve(data))
       .catch(reject)
   })
@@ -31,20 +32,26 @@ module.exports = function(animals) {
         let oasisStatus = "3" // "1" Occupied, "3" Unoccupied
 
         let oases = Object.keys(response["1"].region)
-          .reduce((a, regionId) => [...a, ...response["1"].region[regionId]], [])
+          .reduce(
+            (a, regionId) => [...a, ...response["1"].region[regionId]],
+            []
+          )
           .filter(cell => cell.oasis && cell.oasis.oasisStatus == oasisStatus)
           .map(oasis => `MapDetails:${oasis.id}`)
 
         return getCache({ names: oases })
       })
       .then(data => {
-        let result = data.cache.map(cell => {
-          return {
-            id: cell.data.troops.villageId,
-            units: cell.data.troops.units
-          }
-        })
-          .filter(res => Object.keys(res.units).some(unit => animals.includes(unit)))
+        let result = data.cache
+          .map(cell => {
+            return {
+              id: cell.data.troops.villageId,
+              units: cell.data.troops.units
+            }
+          })
+          .filter(res =>
+            Object.keys(res.units).some(unit => animals.includes(unit))
+          )
 
         resolve(result)
       })

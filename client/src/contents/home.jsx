@@ -10,7 +10,9 @@ export default function Home(props) {
     <Container>
       <Jumbotron fluid className="p-5 bg-transparent">
         <h1 className="text-info">Your Travian: Kingdom Tool</h1>
-        <h4 className="ml-2 font-weight-lighter text-muted">Doing stuff using your session</h4>
+        <h4 className="ml-2 font-weight-lighter text-muted">
+          Doing stuff using your session
+        </h4>
 
         <div className="mt-5">
           <h2 className="text-info">Features</h2>
@@ -21,8 +23,12 @@ export default function Home(props) {
                 className="text-decoration-none"
                 onClick={() => setEventKey("search")}
               >
-                <span className="font-weight-light text-muted">Search Player </span>
-                <Badge pill variant="info">Incoming</Badge>
+                <span className="font-weight-light text-muted">
+                  Search Player{" "}
+                </span>
+                <Badge pill variant="info">
+                  Incoming
+                </Badge>
               </a>
             </li>
             <li>
@@ -31,8 +37,12 @@ export default function Home(props) {
                 className="text-decoration-none"
                 onClick={() => setEventKey("search-kingdom")}
               >
-                <span className="font-weight-light text-muted">Search Kingdom </span>
-                <Badge pill variant="info">Incoming</Badge>
+                <span className="font-weight-light text-muted">
+                  Search Kingdom{" "}
+                </span>
+                <Badge pill variant="info">
+                  Incoming
+                </Badge>
               </a>
             </li>
             <li>
@@ -41,8 +51,12 @@ export default function Home(props) {
                 className="text-decoration-none"
                 onClick={() => setEventKey("search-inactive")}
               >
-                <span className="font-weight-light text-muted">Search Inactive </span>
-                <Badge pill variant="info">Incoming</Badge>
+                <span className="font-weight-light text-muted">
+                  Search Inactive{" "}
+                </span>
+                <Badge pill variant="info">
+                  Incoming
+                </Badge>
               </a>
             </li>
             <li>
@@ -51,7 +65,9 @@ export default function Home(props) {
                 className="text-decoration-none"
                 onClick={() => setEventKey("find-animals")}
               >
-                <span className="font-weight-light text-muted">Find Animals </span>
+                <span className="font-weight-light text-muted">
+                  Find Animals{" "}
+                </span>
               </a>
             </li>
             <li>
@@ -60,8 +76,12 @@ export default function Home(props) {
                 className="text-decoration-none"
                 onClick={() => setEventKey("find-cropper")}
               >
-                <span className="font-weight-light text-muted">Find Cropper </span>
-                <Badge pill variant="info">Incoming</Badge>
+                <span className="font-weight-light text-muted">
+                  Find Cropper{" "}
+                </span>
+                <Badge pill variant="info">
+                  Incoming
+                </Badge>
               </a>
             </li>
             <li>
@@ -70,8 +90,12 @@ export default function Home(props) {
                 className="text-decoration-none"
                 onClick={() => setEventKey("attack-schedule")}
               >
-                <span className="font-weight-light text-muted">Attack Schedule </span>
-                <Badge pill variant="info">Incoming</Badge>
+                <span className="font-weight-light text-muted">
+                  Attack Schedule{" "}
+                </span>
+                <Badge pill variant="info">
+                  Incoming
+                </Badge>
               </a>
             </li>
           </ul>

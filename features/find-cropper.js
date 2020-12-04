@@ -11,7 +11,10 @@ module.exports = function() {
 
         Object.keys(data.response["1"].region).forEach(regionId => {
           data.response["1"].region[regionId].forEach(cell => {
-            if (cell.resType && (cell.resType == "3339" || cell.resType == "11115")) {
+            if (
+              cell.resType &&
+              (cell.resType == "3339" || cell.resType == "11115")
+            ) {
               const temp = {
                 id: cell.id,
                 resType: cell.resType,
@@ -32,7 +35,7 @@ module.exports = function() {
         })
 
         croppers.forEach(cropper => {
-          const [ x1, y1 ] = reverseId(cropper.id)
+          const [x1, y1] = reverseId(cropper.id)
 
           for (let x = x1 - 3; x < x1 + 4; x++) {
             for (let y = y1 - 3; y < y1 + 4; y++) {

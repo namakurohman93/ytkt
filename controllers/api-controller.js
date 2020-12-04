@@ -17,7 +17,7 @@ module.exports = {
       response: {
         isLogin: !!email && !!password,
         email,
-        gameworld: gameworldName,
+        gameworld: gameworldName
       }
     })
   },
@@ -68,7 +68,8 @@ module.exports = {
 
     if (!name.trim()) {
       res.status(400).json({
-        error: true, message: "Name is required"
+        error: true,
+        message: "Name is required"
       })
     } else {
       let options = {
@@ -107,7 +108,7 @@ module.exports = {
           include: [
             {
               model: models.Population,
-              attributes: ["population", "createdAt"],
+              attributes: ["population", "createdAt"]
             }
           ]
         }
@@ -130,7 +131,8 @@ module.exports = {
 
     if (!name.trim()) {
       res.status(400).json({
-        error: true, message: "Kingdom name is required"
+        error: true,
+        message: "Kingdom name is required"
       })
     } else {
       let options = {
@@ -239,7 +241,8 @@ module.exports = {
 
     models.Player.findAll(options)
       .then(players => {
-        const villages = players.map(player => player.toJSON())
+        const villages = players
+          .map(player => player.toJSON())
           .reduce((a, player) => {
             let result = []
 
@@ -256,7 +259,9 @@ module.exports = {
               ...a,
               ...player.Villages.map(village => ({
                 ...village,
-                villagePopulation: village.Populations[village.Populations.length - 1].population,
+                villagePopulation:
+                  village.Populations[village.Populations.length - 1]
+                    .population,
                 player,
                 playerEvolution
               }))
@@ -274,7 +279,9 @@ module.exports = {
             kingdom: village.player.Kingdom.name,
             playerEvolution: village.playerEvolution
           }))
-          .sort((a, b) => distance(a.tkCellId, x, y) - distance(b.tkCellId, x, y))
+          .sort(
+            (a, b) => distance(a.tkCellId, x, y) - distance(b.tkCellId, x, y)
+          )
           .filter(village => village.playerEvolution <= evolution)
 
         res.send(villages)
@@ -300,6 +307,7 @@ module.exports = {
     searchCropper()
       .then(croppers => res.json(croppers))
       .catch(err => {
+        console.log(err)
         res.status(500).json({ error: true, message: "Internal error" })
       })
   }

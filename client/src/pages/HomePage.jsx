@@ -8,7 +8,7 @@ import FindAnimals from "../contents/find-animals"
 import FindCropper from "../contents/find-cropper"
 
 export default function HomePage() {
-  const [ eventKey, setEventKey ] = useState("home")
+  const [eventKey, setEventKey] = useState("home")
 
   return (
     <>
@@ -19,63 +19,39 @@ export default function HomePage() {
         onSelect={value => setEventKey(value)}
       >
         <Nav.Item>
-          <Nav.Link eventKey="home">
-            ytkt
-          </Nav.Link>
+          <Nav.Link eventKey="home">ytkt</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="search">
-            Search Player
-          </Nav.Link>
+          <Nav.Link eventKey="search">Search Player</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="search-kingdom">
-            Search Kingdom
-          </Nav.Link>
+          <Nav.Link eventKey="search-kingdom">Search Kingdom</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="search-inactive">
-            Search Inactive
-          </Nav.Link>
+          <Nav.Link eventKey="search-inactive">Search Inactive</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="find-animals">
-            Find Animals
-          </Nav.Link>
+          <Nav.Link eventKey="find-animals">Find Animals</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="find-cropper">
-            Find Cropper
-          </Nav.Link>
+          <Nav.Link eventKey="find-cropper">Find Cropper</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="attack-schedule">
-            Attack Schedule
-          </Nav.Link>
+          <Nav.Link eventKey="attack-schedule">Attack Schedule</Nav.Link>
         </Nav.Item>
       </Nav>
 
-      {
-        eventKey === "home" && <Home setEventKey={value => setEventKey(value)}/>
-      }
-      {
-        eventKey === "search" && <SearchPlayer />
-      }
-      {
-        eventKey === "search-kingdom" && <SearchKingdom />
-      }
-      {
-        eventKey === "search-inactive" && <SearchInactive />
-      }
-      {
-        eventKey === "find-animals" && <FindAnimals />
-      }
-      {
-        eventKey === "find-cropper" && <FindCropper />
-      }
-      {
-        eventKey === "attack-schedule" && <p className="mt-5">Attack Schedule Content</p>
-      }
+      {eventKey === "home" && (
+        <Home setEventKey={value => setEventKey(value)} />
+      )}
+      {eventKey === "search" && <SearchPlayer />}
+      {eventKey === "search-kingdom" && <SearchKingdom />}
+      {eventKey === "search-inactive" && <SearchInactive />}
+      {eventKey === "find-animals" && <FindAnimals />}
+      {eventKey === "find-cropper" && <FindCropper />}
+      {eventKey === "attack-schedule" && (
+        <p className="mt-5">Attack Schedule Content</p>
+      )}
     </>
   )
 }

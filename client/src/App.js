@@ -7,13 +7,14 @@ import httpClient from "./utilities/http-client"
 const { NODE_ENV } = process.env
 
 export default function App() {
-  const [ isLogin, setIsLogin ] = useState(null)
-  const [ skipLogin, setSkipLogin ] = useState(false)
+  const [isLogin, setIsLogin] = useState(null)
+  const [skipLogin, setSkipLogin] = useState(false)
 
   useEffect(() => {
     if (skipLogin && NODE_ENV === "development") setIsLogin(true)
     else {
-      httpClient.get("/api/status")
+      httpClient
+        .get("/api/status")
         .then(({ data }) => setIsLogin(data.response.isLogin))
         .catch(err => {
           setIsLogin(false)
@@ -25,12 +26,12 @@ export default function App() {
 
   if (isLogin === null) return <CustomSpinner message="checking..." />
 
-  return (
-    isLogin
-    ? <HomePage />
-    : <LoginPage
-        setIsLogin={value => setIsLogin(value)}
-        setSkipLogin={value => setSkipLogin(value)}
-      />
+  return isLogin ? (
+    <HomePage />
+  ) : (
+    <LoginPage
+      setIsLogin={value => setIsLogin(value)}
+      setSkipLogin={value => setSkipLogin(value)}
+    />
   )
 }

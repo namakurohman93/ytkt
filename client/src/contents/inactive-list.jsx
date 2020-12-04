@@ -8,7 +8,7 @@ export default function InactiveList(props) {
   const { inactiveList, setInactiveList, x, y } = props
   const tribes = ["", "Roman", "Teuton", "Gauls"]
 
-  const [ page, setPage ] = useState(1)
+  const [page, setPage] = useState(1)
 
   const buttonHandler = type => {
     if (type === "-") {
@@ -21,19 +21,10 @@ export default function InactiveList(props) {
   return (
     <div className="pt-1">
       <p>
-        <Button
-          size="sm"
-          variant="info"
-          onClick={() => buttonHandler("-")}
-        >
+        <Button size="sm" variant="info" onClick={() => buttonHandler("-")}>
           ◀️
-        </Button>
-        {" "}
-        <Button
-          size="sm"
-          variant="info"
-          onClick={() => buttonHandler("+")}
-        >
+        </Button>{" "}
+        <Button size="sm" variant="info" onClick={() => buttonHandler("+")}>
           ▶️
         </Button>
       </p>
@@ -59,20 +50,17 @@ export default function InactiveList(props) {
                 <td>{cellIdToCoordinate(village.tkCellId)}</td>
                 <td>{distance(village.tkCellId, x, y).toFixed(1)}</td>
                 <td>
-                  {village.name} - ({village.resType}) {village.owner === 0 ? "📍" : "🛡️"}
+                  {village.name} - ({village.resType}){" "}
+                  {village.owner === 0 ? "📍" : "🛡️"}
                 </td>
                 <td>{village.population}</td>
                 <td>{village.playerEvolution}</td>
                 <td>{tribes[village.tribeId]}</td>
                 <td>
-                  {village.playerName} { village.isActive ? "" : "💤" }
+                  {village.playerName} {village.isActive ? "" : "💤"}
                 </td>
                 <td>
-                  {
-                    village.kingdom === ""
-                      ? "No Kingdom"
-                      : village.kingdom
-                  }
+                  {village.kingdom === "" ? "No Kingdom" : village.kingdom}
                 </td>
               </tr>
             )

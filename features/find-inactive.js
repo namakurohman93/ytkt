@@ -1,7 +1,7 @@
 /*
  * const sequelize = require("../models")
  * const { QueryTypes } = require("sequelize")
- * 
+ *
  * function findInactive(days, hours, offset, evolution) {
  *   return new Promise((resolve, reject) => {
  *     let query = `
@@ -28,7 +28,7 @@
  *       order by res."playerId"
  *       limit 10 offset ?
  *     `
- * 
+ *
  *     sequelize.query(query, {
  *       type: QueryTypes.SELECT,
  *       replacements: [createDate(days, hours), createDate(), evolution, offset]
@@ -37,21 +37,21 @@
  *       .catch(reject)
  *   })
  * }
- * 
+ *
  * function createDate(days = 0, hours = 0) {
  *   let now = new Date()
  *   let diff = (days * 24 * 60 * 60 * 1000) + (hours * 60 * 60 * 1000)
  *   let modDate = new Date(now.getTime() - diff)
- * 
+ *
  *   let [month, date, year] = modDate.toLocaleDateString().split("/")
- * 
+ *
  *   if (+month < 10) month = '0' + month
  *   if (+date < 10) date = '0' + date
- * 
+ *
  *   let time = modDate.toUTCString().split(" ")[4]
- * 
+ *
  *   return `${year}-${month}-${date} ${time}`
  * }
- * 
+ *
  * module.exports = findInactive
  */

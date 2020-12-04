@@ -9,18 +9,19 @@ import httpClient from "../utilities/http-client"
 const { NODE_ENV } = process.env
 
 export default function LoginPage({ setIsLogin, setSkipLogin }) {
-  const [ email, setEmail ] = useState("")
-  const [ password, setPassword ] = useState("")
-  const [ gameworld, setGameworld ] = useState("")
-  const [ loading, setLoading ] = useState(false)
-  const [ error, setError ] = useState(false)
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [gameworld, setGameworld] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
 
   const submitHandler = event => {
     event.preventDefault()
     setError(false)
     setLoading(true)
 
-    httpClient.post("/api/login", { email, password, gameworld })
+    httpClient
+      .post("/api/login", { email, password, gameworld })
       .then(({ data }) => {
         setEmail("")
         setPassword("")
@@ -35,12 +36,11 @@ export default function LoginPage({ setIsLogin, setSkipLogin }) {
     <Container className="mt-5 p-5 w-25">
       <h3>Login</h3>
 
-      {
-        NODE_ENV === "development" &&
-          <Button variant="success" onClick={() => setSkipLogin(true)}>
-            Skip Login
-          </Button>
-      }
+      {NODE_ENV === "development" && (
+        <Button variant="success" onClick={() => setSkipLogin(true)}>
+          Skip Login
+        </Button>
+      )}
 
       <Form className="mt-3">
         <Form.Group>
@@ -70,40 +70,28 @@ export default function LoginPage({ setIsLogin, setSkipLogin }) {
             disabled={loading}
           />
         </Form.Group>
-        {
-          loading
-          ? <Button
-              variant="primary"
-              disabled
-            >
-              <Spinner
-                animation="border"
-                role="status"
-                as="span"
-                size="sm"
-              /> Loading...
-            </Button>
-          : <Button
-              variant="primary"
-              onClick={submitHandler}
-              type="submit"
-            >
-              Login
-            </Button>
-        }
+        {loading ? (
+          <Button variant="primary" disabled>
+            <Spinner animation="border" role="status" as="span" size="sm" />{" "}
+            Loading...
+          </Button>
+        ) : (
+          <Button variant="primary" onClick={submitHandler} type="submit">
+            Login
+          </Button>
+        )}
       </Form>
 
-      {
-        error &&
-          <Alert
-            className="mt-3"
-            variant="danger"
-            dismissible
-            onClose={() => setError(false)}
-          >
-            Make sure your credential is correct.
-          </Alert>
-      }
+      {error && (
+        <Alert
+          className="mt-3"
+          variant="danger"
+          dismissible
+          onClose={() => setError(false)}
+        >
+          Make sure your credential is correct.
+        </Alert>
+      )}
     </Container>
   )
 }
