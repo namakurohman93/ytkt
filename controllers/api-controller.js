@@ -1,13 +1,13 @@
 // const { Op } = require("sequelize")
 const cronJob = require("../utilities/cron-job")
-const createDate = require("../utilities/create-date")
 const distance = require("../utilities/distance")
+const createDate = require("../utilities/create-date")
 const authenticate = require("../features/login")
 const findInactive = require("../features/find-inactive")
 const { getState, setState } = require("../store")
 // const { models } = require("../models")
 const findAnimals = require("../features/find-animals")
-const requestMapData = require("../features/request-map-data")
+const searchCropper = require("../features/find-cropper")
 
 module.exports = {
   getStatus: function(req, res) {
@@ -297,31 +297,8 @@ module.exports = {
     }
   },
   findCropper(req, res) {
-    requestMapData()
-      .then(data => {
-        const croppers = []
-
-        Object.keys(data.response["1"].region).forEach(regionId => {
-          data.response["1"].region[regionId].forEach(cell => {
-            if (cell.resType && (cell.resType == "3339" || cell.resType == "11115")) {
-              const temp = {
-                id: cell.id,
-                resType: cell.resType
-              }
-
-              if (cell.playerId) {
-                temp.active = data.response["1"].player[cell.playerId].active
-              }
-
-              if (cell.village) temp.name = cell.village.name
-
-              croppers.push(temp)
-            }
-          })
-        })
-
-        res.json(croppers)
-      })
+    searchCropper()
+      .then(croppers => res.json(croppers))
       .catch(err => {
         res.status(500).json({ error: true, message: "Internal error" })
       })

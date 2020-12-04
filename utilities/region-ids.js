@@ -1,6 +1,4 @@
-function cellId(x, y) {
-  return (536887296 + x) + (y * 32768)
-}
+const cellId = require("./cell-id")
 
 function generateRegionIds() {
   let result = []

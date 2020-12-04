@@ -1,6 +1,7 @@
+const reverseId = require("./reverse-id")
+
 module.exports = function(tkCellId, x, y) {
-  const x1 = +tkCellId % 32768 - 16384
-  const y1 = Math.floor(+tkCellId / 32768) - 16384
+  const [x1, y1] = reverseId(tkCellId)
 
   const width = Math.abs(x1 - x)
   const height = Math.abs(y1 - y)
