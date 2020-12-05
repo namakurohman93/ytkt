@@ -6,8 +6,8 @@ module.exports = function() {
   return new Promise((resolve, reject) => {
     requestMapData()
       .then(data => {
-        const croppers = []
-        const oases = {}
+        let croppers = []
+        let oases = {}
 
         Object.keys(data.response["1"].region).forEach(regionId => {
           data.response["1"].region[regionId].forEach(cell => {
@@ -46,10 +46,19 @@ module.exports = function() {
           }
 
           cropper.bonusOases = cropper.bonusOases
-            .sort((a, b) => a - b)
+            .sort((a, b) => b - a)
             .filter((_, index) => index < 3)
             .reduce((a, oasis) => a + oasis, 0)
         })
+
+        croppers = [
+          ...croppers
+            .filter(cropper => cropper.resType == "11115")
+            .sort((a, b) => b.bonusOases - a.bonusOases),
+          ...croppers
+            .filter(cropper => cropper.resType == "3339")
+            .sort((a, b) => b.bonusOases - a.bonusOases)
+        ]
 
         resolve(croppers)
       })

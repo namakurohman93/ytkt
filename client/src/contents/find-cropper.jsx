@@ -9,6 +9,7 @@ import cellIdToCoordinate from "../utilities/cell-id-to-coordinate"
 export default function FindCropper() {
   const [loading, setLoading] = useState(false)
   const [croppers, setCroppers] = useState([])
+  const [whatToShow, setWhatToShow] = useState([])
 
   const clickHandler = event => {
     setLoading(true)
