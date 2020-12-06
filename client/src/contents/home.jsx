@@ -1,7 +1,8 @@
 import Container from "react-bootstrap/Container"
 import Jumbotron from "react-bootstrap/Jumbotron"
 import Badge from "react-bootstrap/Badge"
-import "../styles/home.style.css"
+
+// import "../styles/home.style.css"
 
 export default function Home(props) {
   const { setEventKey } = props

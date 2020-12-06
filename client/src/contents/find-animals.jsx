@@ -75,6 +75,7 @@ export default function FindAnimals() {
       <Form className="px-5" onSubmit={submitHandler}>
         <div>
           <Form.Check
+            custom
             inline
             label="Rat 🐭"
             type="checkbox"
@@ -83,6 +84,7 @@ export default function FindAnimals() {
             disabled={loading}
           />
           <Form.Check
+            custom
             inline
             label="Spider 🕷️"
             type="checkbox"
@@ -91,6 +93,7 @@ export default function FindAnimals() {
             disabled={loading}
           />
           <Form.Check
+            custom
             inline
             label="Snake 🐍"
             type="checkbox"
@@ -99,6 +102,7 @@ export default function FindAnimals() {
             disabled={loading}
           />
           <Form.Check
+            custom
             inline
             label="Bat 🦇"
             type="checkbox"
@@ -107,6 +111,7 @@ export default function FindAnimals() {
             disabled={loading}
           />
           <Form.Check
+            custom
             inline
             label="Wild Boar 🐗"
             type="checkbox"
@@ -117,6 +122,7 @@ export default function FindAnimals() {
         </div>
         <div className="mt-2">
           <Form.Check
+            custom
             inline
             label="Wolf 🐺"
             type="checkbox"
@@ -125,6 +131,7 @@ export default function FindAnimals() {
             disabled={loading}
           />
           <Form.Check
+            custom
             inline
             label="Bear 🐻"
             type="checkbox"
@@ -133,6 +140,7 @@ export default function FindAnimals() {
             disabled={loading}
           />
           <Form.Check
+            custom
             inline
             label="Crocodile 🐊"
             type="checkbox"
@@ -141,6 +149,7 @@ export default function FindAnimals() {
             disabled={loading}
           />
           <Form.Check
+            custom
             inline
             label="Tiger 🐯"
             type="checkbox"
@@ -149,6 +158,7 @@ export default function FindAnimals() {
             disabled={loading}
           />
           <Form.Check
+            custom
             inline
             label="Elephant 🐘"
             type="checkbox"

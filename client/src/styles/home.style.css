@@ -1,8 +1,0 @@
-ul {
-  list-style: none;
-}
-
-ul li::before {
-  content: "📌 ";
-  color: "red";
-}

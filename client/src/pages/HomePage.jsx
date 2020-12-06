@@ -6,6 +6,7 @@ import SearchKingdom from "../contents/search-kingdom"
 import SearchInactive from "../contents/search-inactive"
 import FindAnimals from "../contents/find-animals"
 import FindCropper from "../contents/find-cropper"
+import ScheduleAttack from "../contents/schedule-attack"
 
 export default function HomePage() {
   const [eventKey, setEventKey] = useState("home")
@@ -49,9 +50,7 @@ export default function HomePage() {
       {eventKey === "search-inactive" && <SearchInactive />}
       {eventKey === "find-animals" && <FindAnimals />}
       {eventKey === "find-cropper" && <FindCropper />}
-      {eventKey === "attack-schedule" && (
-        <p className="mt-5">Attack Schedule Content</p>
-      )}
+      {eventKey === "attack-schedule" && <ScheduleAttack />}
     </>
   )
 }

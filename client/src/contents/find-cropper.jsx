@@ -73,24 +73,24 @@ export default function FindCropper() {
               <Form.Check
                 inline
                 label="3339"
-                type="checkbox"
-                id="inline-checkbox-1"
+                type="switch"
+                id="inline-switch-1"
                 checked={filter.nine}
                 onClick={() => setFilter({ ...filter, nine: !filter.nine })}
               />
               <Form.Check
                 inline
                 label="11115"
-                type="checkbox"
-                id="inline-checkbox-2"
+                type="switch"
+                id="inline-switch-2"
                 checked={filter.fifth}
                 onClick={() => setFilter({ ...filter, fifth: !filter.fifth })}
               />
               <Form.Check
                 inline
                 label="free / inactive"
-                type="checkbox"
-                id="inline-checkbox-4"
+                type="switch"
+                id="inline-switch-4"
                 onClick={() => setFilter({ ...filter, free: !filter.free })}
               />
             </div>

@@ -8,6 +8,7 @@ import InactiveList from "./inactive-list"
 import CustomError from "../components/custom-error"
 import CustomSpinner from "../components/custom-spinner"
 import httpClient from "../utilities/http-client"
+
 import "../styles/search-inactive.style.css"
 
 export default function SearchInactive() {
