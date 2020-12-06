@@ -1,4 +1,5 @@
 // const { Op } = require("sequelize")
+const cellId = require("../utilities/cell-id")
 const cronJob = require("../utilities/cron-job")
 const distance = require("../utilities/distance")
 const createDate = require("../utilities/create-date")
@@ -9,6 +10,7 @@ const { getState, setState } = require("../store")
 const findAnimals = require("../features/find-animals")
 const searchCropper = require("../features/find-cropper")
 const scheduleAttack = require("../features/schedule-attack")
+const requestOwnVillage = require("../features/request-own-village")
 
 module.exports = {
   getStatus: function(req, res) {
@@ -308,13 +310,31 @@ module.exports = {
     searchCropper()
       .then(croppers => res.json(croppers))
       .catch(err => {
-        console.log(err)
         res.status(500).json({ error: true, message: "Internal error" })
       })
   },
   addScheduleAttack: function(req, res) {
-    res.send(req.body)
+    let date = new Date(req.body.date)
+    let target = cellId(req.body.x, req.body.y)
+    let { units, villageId, catapultTargets } = req.body
 
-    // scheduleAttack()
+    scheduleAttack(date, units, target, villageId, catapultTargets)
+
+    let { scheduleAttacks } = getState()
+
+    res.json({ scheduleAttacks })
+  },
+  getOwnVillages: function(req, res) {
+    let { email, password } = getState()
+
+    if (!!email && !!password) {
+      requestOwnVillage()
+        .then(villages => res.json(villages))
+        .catch(err => {
+          res.status(500).json({ error: true, message: "Internal error" })
+        })
+    } else {
+      res.status(403).json({ error: true, message: "Need to login first!" })
+    }
   }
 }

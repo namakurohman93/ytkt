@@ -1,39 +1,39 @@
 export const staticUnit = {
   "1": [
-    "Legionaire",
-    "Praetorian",
-    "Imperian",
-    "Scout",
-    "Imperatoris",
-    "Caesaris",
-    "Ram",
-    "Catapult",
-    "Senator",
-    "Settler"
+    { id: "1", name: "Legionaire" },
+    { id: "2", name: "Praetorian" },
+    { id: "3", name: "Imperian" },
+    { id: "4", name: "Scout" },
+    { id: "5", name: "Imperatoris" },
+    { id: "6", name: "Caesaris" },
+    { id: "7", name: "Ram" },
+    { id: "8", name: "Catapult" },
+    { id: "9", name: "Senator" },
+    { id: "10", name: "Settler" }
   ],
   "2": [
-    "Clubswinger",
-    "Spearman",
-    "Axeman",
-    "Scout",
-    "Paladin",
-    "Teutonic. K",
-    "Ram",
-    "Catapult",
-    "Chief",
-    "Settler"
+    { id: "1", name: "Clubswinger" },
+    { id: "2", name: "Spearman" },
+    { id: "3", name: "Axeman" },
+    { id: "4", name: "Scout" },
+    { id: "5", name: "Paladin" },
+    { id: "6", name: "Teutonic. K" },
+    { id: "7", name: "Ram" },
+    { id: "8", name: "Catapult" },
+    { id: "9", name: "Chief" },
+    { id: "10", name: "Settler" }
   ],
   "3": [
-    "Phalanx",
-    "Swordsman",
-    "Pathfinder",
-    "T. Thunder",
-    "Druidrider",
-    "Haeduan",
-    "Ram",
-    "Catapult",
-    "Chief",
-    "Settler"
+    { id: "1", name: "Phalanx" },
+    { id: "2", name: "Swordsman" },
+    { id: "3", name: "Pathfinder" },
+    { id: "4", name: "T. Thunder" },
+    { id: "5", name: "Druidrider" },
+    { id: "6", name: "Haeduan" },
+    { id: "7", name: "Ram" },
+    { id: "8", name: "Catapult" },
+    { id: "9", name: "Chief" },
+    { id: "10", name: "Settler" }
   ]
 }
 

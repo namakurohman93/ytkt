@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Nav from "react-bootstrap/Nav"
 import Home from "../contents/home"
 import SearchPlayer from "../contents/search-player"
@@ -7,9 +7,26 @@ import SearchInactive from "../contents/search-inactive"
 import FindAnimals from "../contents/find-animals"
 import FindCropper from "../contents/find-cropper"
 import ScheduleAttack from "../contents/schedule-attack"
+import httpClient from "../utilities/http-client"
 
 export default function HomePage() {
   const [eventKey, setEventKey] = useState("home")
+  const [accountDetail, setAccountDetail] = useState({
+    villages: null,
+    tribeId: null
+  })
+
+  useEffect(() => {
+    httpClient
+      .get(`/api/own-villages`)
+      .then(({ data }) =>
+        setAccountDetail({
+          villages: data,
+          tribeId: data[0].tribeId
+        })
+      )
+      .catch(err => console.log(err))
+  }, [])
 
   return (
     <>
@@ -50,7 +67,9 @@ export default function HomePage() {
       {eventKey === "search-inactive" && <SearchInactive />}
       {eventKey === "find-animals" && <FindAnimals />}
       {eventKey === "find-cropper" && <FindCropper />}
-      {eventKey === "attack-schedule" && <ScheduleAttack />}
+      {eventKey === "attack-schedule" && (
+        <ScheduleAttack accountDetail={accountDetail} />
+      )}
     </>
   )
 }
