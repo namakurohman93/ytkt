@@ -313,6 +313,11 @@ module.exports = {
         res.status(500).json({ error: true, message: "Internal error" })
       })
   },
+  getScheduleAttack: function(req, res) {
+    let { scheduleAttacks } = getState()
+
+    res.json({ scheduleAttacks })
+  },
   addScheduleAttack: function(req, res) {
     let date = new Date(req.body.date)
     let target = cellId(req.body.x, req.body.y)

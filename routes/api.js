@@ -10,6 +10,7 @@ router.get("/kingdoms/:kingdomId", ApiController.getKingdomDetail)
 router.get("/inactive", ApiController.getInactive)
 router.get("/animals", ApiController.findAnimals)
 router.get("/cropper", ApiController.findCropper)
+router.get("/schedule-attack", ApiController.getScheduleAttack)
 router.post("/schedule-attack", ApiController.addScheduleAttack)
 router.get("/own-villages", ApiController.getOwnVillages)
 
