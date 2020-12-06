@@ -8,6 +8,7 @@ const { getState, setState } = require("../store")
 // const { models } = require("../models")
 const findAnimals = require("../features/find-animals")
 const searchCropper = require("../features/find-cropper")
+const scheduleAttack = require("../features/schedule-attack")
 
 module.exports = {
   getStatus: function(req, res) {
@@ -303,12 +304,17 @@ module.exports = {
         })
     }
   },
-  findCropper(req, res) {
+  findCropper: function(req, res) {
     searchCropper()
       .then(croppers => res.json(croppers))
       .catch(err => {
         console.log(err)
         res.status(500).json({ error: true, message: "Internal error" })
       })
+  },
+  addScheduleAttack: function(req, res) {
+    res.send(req.body)
+
+    // scheduleAttack()
   }
 }

@@ -11,7 +11,8 @@ let state = {
   cronJob: {
     isRunning: false,
     job: null
-  }
+  },
+  scheduleAttacks: []
 }
 
 if (process.env.NODE_ENV == "development") {

@@ -10,5 +10,6 @@ router.get("/kingdoms/:kingdomId", ApiController.getKingdomDetail)
 router.get("/inactive", ApiController.getInactive)
 router.get("/animals", ApiController.findAnimals)
 router.get("/cropper", ApiController.findCropper)
+router.post("/schedule-attack", ApiController.addScheduleAttack)
 
 module.exports = router
