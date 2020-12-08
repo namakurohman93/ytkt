@@ -15,14 +15,16 @@ module.exports = function(date, units, target, villageId, catapultTargets = []) 
 
   scheduleAttacks.push({
     id,
+    units,
+    catapultTargets,
     status: "pending",
-    start,
+    target,
     end: date,
     errorMessage: null,
-    task: setTimeout(() => {
+    task: setTimeout(({ id, units, target, villageId, catapultTargets }) => {
       sentAttack(units, target, villageId, catapultTargets)
-        .then(({ data }) => {
-          console.log(data, "<<<< response inside then of sentAttack")
+        .then(data => {
+          console.log(data, "<<< data di schedule-attack.js")
 
           const { scheduleAttacks } = getState()
 
@@ -46,7 +48,7 @@ module.exports = function(date, units, target, villageId, catapultTargets = []) 
 
           setState({ scheduleAttacks })
         })
-    }, timeout, id)
+    }, timeout, { id, units, target, villageId, catapultTargets })
   })
 
   setState({ scheduleAttacks })

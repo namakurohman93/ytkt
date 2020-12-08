@@ -25,7 +25,9 @@ module.exports = function(units, target, villageId, catapultTargets) {
 
     httpClient
       .post(url, payload, options)
-      .then(({ data }) => resolve(data))
+      .then(({ data }) => {
+        resolve(data)
+      })
       .catch(reject)
   })
 }

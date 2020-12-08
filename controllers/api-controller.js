@@ -315,8 +315,12 @@ module.exports = {
   },
   getScheduleAttack: function(req, res) {
     let { scheduleAttacks } = getState()
+    let response = scheduleAttacks.map(s => {
+      let { id, units, catapultTargets, status, target, end, errorMessage } = s
+      return { id, units, catapultTargets, status, target, end, errorMessage }
+    })
 
-    res.json({ scheduleAttacks })
+    res.json(response)
   },
   addScheduleAttack: function(req, res) {
     let date = new Date(req.body.date)
@@ -326,8 +330,30 @@ module.exports = {
     scheduleAttack(date, units, target, villageId, catapultTargets)
 
     let { scheduleAttacks } = getState()
+    let response = scheduleAttacks.map(s => {
+      let { id, units, catapultTargets, status, target, end, errorMessage } = s
+      return { id, units, catapultTargets, status, target, end, errorMessage }
+    })
 
-    res.json({ scheduleAttacks })
+    res.json(response)
+  },
+  deleteScheduleAttack: function(req, res) {
+    let { id } = req.params
+    let { scheduleAttacks } = getState()
+    let index = scheduleAttacks.findIndex(e => e.id == id)
+
+    if (index != -1) {
+      let scheduleAttack = scheduleAttacks.splice(index, 1)[0]
+      clearTimeout(scheduleAttack.task)
+      setState({ scheduleAttacks })
+    }
+
+    let response = scheduleAttacks.map(s => {
+      let { id, units, catapultTargets, status, target, end, errorMessage } = s
+      return { id, units, catapultTargets, status, target, end, errorMessage }
+    })
+
+    res.json(response)
   },
   getOwnVillages: function(req, res) {
     let { email, password } = getState()

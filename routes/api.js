@@ -12,6 +12,7 @@ router.get("/animals", ApiController.findAnimals)
 router.get("/cropper", ApiController.findCropper)
 router.get("/schedule-attack", ApiController.getScheduleAttack)
 router.post("/schedule-attack", ApiController.addScheduleAttack)
+router.delete("/schedule-attack/:id", ApiController.deleteScheduleAttack)
 router.get("/own-villages", ApiController.getOwnVillages)
 
 module.exports = router

@@ -1,15 +1,23 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Container from "react-bootstrap/Container"
 import Form from "react-bootstrap/Form"
 import InputGroup from "react-bootstrap/InputGroup"
 import Col from "react-bootstrap/Col"
 import Button from "react-bootstrap/Button"
+import Table from "react-bootstrap/Table"
+import Popover from "react-bootstrap/Popover"
+import OverlayTrigger from "react-bootstrap/OverlayTrigger"
 import { staticUnit, staticBuilding } from "../constants"
+import cellIdToCoordinate from "../utilities/cell-id-to-coordinate"
 import httpClient from "../utilities/http-client"
+
+import "../styles/schedule-attack.style.css"
 
 export default function ScheduleAttack({ accountDetail }) {
   const { villages, tribeId } = accountDetail
 
+  const [loading, setLoading] = useState(false)
+  const [schedule, setSchedule] = useState([])
   const [formData, setFormData] = useState({
     villageId: "",
     x: "",
@@ -33,8 +41,16 @@ export default function ScheduleAttack({ accountDetail }) {
     secondTarget: "99"
   })
 
+  useEffect(() => {
+    httpClient
+      .get(`/api/schedule-attack`)
+      .then(({ data }) => setSchedule(data))
+      .catch(err => console.log(err))
+  }, [])
+
   const submitHandler = e => {
     e.preventDefault()
+    setLoading(true)
 
     const payload = {
       date: `${formData.date} ${formData.time}`,
@@ -45,10 +61,42 @@ export default function ScheduleAttack({ accountDetail }) {
       catapultTargets: [formData.firstTarget, formData.secondTarget]
     }
 
-    httpClient.post(`/api/schedule-attack`, payload)
-      .then(({ data }) => console.log(data))
+    httpClient
+      .post(`/api/schedule-attack`, payload)
+      .then(({ data }) => setSchedule(data))
+      .catch(err => console.log(err))
+      .finally(() => setLoading(false))
+  }
+
+  const deleteSchedule = scheduleId => {
+    httpClient
+      .delete(`/api/schedule-attack/${scheduleId}`)
+      .then(({ data }) => setSchedule(data))
       .catch(err => console.log(err))
   }
+
+  const unitPopover = (id, units) => (
+    <Popover id={id}>
+      <Popover.Content>
+        <Table bordered size="sm">
+          <thead>
+            <tr>
+              <th>Legionaire</th>
+              <th>Praetorian</th>
+              <th>Imperian</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>1</td>
+              <td>1</td>
+            </tr>
+          </tbody>
+        </Table>
+      </Popover.Content>
+    </Popover>
+  )
 
   return (
     <Container>
@@ -107,6 +155,7 @@ export default function ScheduleAttack({ accountDetail }) {
                   onChange={e =>
                     setFormData({ ...formData, villageId: e.target.value })
                   }
+                  disabled={loading}
                 >
                   <option value="">Choose...</option>
                   {villages.map(v => {
@@ -135,6 +184,7 @@ export default function ScheduleAttack({ accountDetail }) {
                   onChange={e =>
                     setFormData({ ...formData, x: e.target.value })
                   }
+                  disabled={loading}
                 />
               </InputGroup>
             </Form.Group>
@@ -154,6 +204,7 @@ export default function ScheduleAttack({ accountDetail }) {
                   onChange={e =>
                     setFormData({ ...formData, y: e.target.value })
                   }
+                  disabled={loading}
                 />
               </InputGroup>
             </Form.Group>
@@ -167,6 +218,7 @@ export default function ScheduleAttack({ accountDetail }) {
                 onChange={e =>
                   setFormData({ ...formData, date: e.target.value })
                 }
+                disabled={loading}
               />
             </Form.Group>
 
@@ -180,6 +232,7 @@ export default function ScheduleAttack({ accountDetail }) {
                 onChange={e =>
                   setFormData({ ...formData, time: e.target.value })
                 }
+                disabled={loading}
               />
             </Form.Group>
           </Form.Row>
@@ -208,6 +261,7 @@ export default function ScheduleAttack({ accountDetail }) {
                             }
                           })
                         }
+                        disabled={loading}
                       />
                     </Form.Group>
                   )
@@ -225,6 +279,7 @@ export default function ScheduleAttack({ accountDetail }) {
                         units: { ...formData.units, "11": value }
                       })
                     }}
+                    disabled={loading}
                   />
                 </Form.Group>
               </Form.Row>
@@ -248,6 +303,7 @@ export default function ScheduleAttack({ accountDetail }) {
                   onChange={e =>
                     setFormData({ ...formData, firstTarget: e.target.value })
                   }
+                  disabled={loading}
                 >
                   <option value="99">Random</option>
                   {staticBuilding.map(building => {
@@ -273,6 +329,7 @@ export default function ScheduleAttack({ accountDetail }) {
                   onChange={e =>
                     setFormData({ ...formData, secondTarget: e.target.value })
                   }
+                  disabled={loading}
                 >
                   <option value="99">Random</option>
                   {staticBuilding.map(building => {
@@ -292,11 +349,105 @@ export default function ScheduleAttack({ accountDetail }) {
             className="mt-3"
             onClick={submitHandler}
             type="submit"
+            disabled={loading}
           >
             Schedule the Attack
           </Button>
         </Form>
       </div>
+
+      {schedule.length > 0 ? (
+        <div className="px-5 mt-5">
+          <Table bordered hover size="sm">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Target</th>
+                <th>Status</th>
+                <th>Launch Time</th>
+                <th>Catapult Target</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {schedule.map((s, i) => {
+                return (
+                  <tr key={s.id}>
+                    <td>{i + 1}</td>
+                    <td>{cellIdToCoordinate(s.target)}</td>
+                    <td>{s.status}</td>
+                    <td>{new Date(s.end).toLocaleString()}</td>
+                    <td>
+                      {s.catapultTargets
+                        .map(e =>
+                          e === "99"
+                            ? "Random"
+                            : staticBuilding.find(b => b.id === +e).name
+                        )
+                        .join(", ")}
+                    </td>
+                    <td>
+                      <OverlayTrigger
+                        trigger="click"
+                        rootClose
+                        placement="top"
+                        key="top"
+                        overlay={
+                          <Popover id={s.id} bsPrefix="custom-popover-body">
+                            <Popover.Content className="p-0 rounded">
+                              <Table
+                                size="sm"
+                                className="m-0"
+                                variant="info"
+                                bordered
+                              >
+                                <thead>
+                                  <tr>
+                                    {staticUnit[villages[0].tribeId].map(
+                                      unit => {
+                                        return (
+                                          <th key={unit.id}>{unit.name}</th>
+                                        )
+                                      }
+                                    )}
+                                    <th>Hero</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    {Object.values(s.units).map((v, i) => {
+                                      return <td id={i}>{v}</td>
+                                    })}
+                                  </tr>
+                                </tbody>
+                              </Table>
+                            </Popover.Content>
+                          </Popover>
+                        }
+                      >
+                        <Button variant="primary" size="sm">
+                          See Units
+                        </Button>
+                      </OverlayTrigger>{" "}
+                      <Button
+                        variant="outline-danger"
+                        size="sm"
+                        onClick={() => deleteSchedule(s.id)}
+                      >
+                        🗑️ Delete
+                      </Button>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </Table>
+        </div>
+      ) : (
+        <div className="px-5 mt-5">
+          <p>There is no schedule</p>
+        </div>
+      )}
     </Container>
   )
 }
