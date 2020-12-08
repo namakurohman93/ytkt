@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react"
 import Container from "react-bootstrap/Container"
+import InputGroup from "react-bootstrap/InputGroup"
+import Col from "react-bootstrap/Col"
 import Button from "react-bootstrap/Button"
 import Spinner from "react-bootstrap/Spinner"
 import Table from "react-bootstrap/Table"
 import Form from "react-bootstrap/Form"
 import httpClient from "../utilities/http-client"
+import distance from "../utilities/distance"
 import cellIdToCoordinate from "../utilities/cell-id-to-coordinate"
 
 export default function FindCropper() {
@@ -16,16 +19,28 @@ export default function FindCropper() {
     fifth: true,
     free: false
   })
+  const [x, setX] = useState(0)
+  const [y, setY] = useState(0)
 
   useEffect(() => {
+    let tempX, tempY
+
+    if (isNaN(Number(x))) tempX = 0
+    else tempX = x
+
+    if (isNaN(Number(y))) tempY = 0
+    else tempY = y
+
     let temp = [...croppers]
+      .map(e => ({ ...e, distance: distance(e.id, x, y) }))
+      .sort((a, b) => a.distance - b.distance)
 
     if (!filter.nine) temp = temp.filter(e => e.resType !== "3339")
     if (!filter.fifth) temp = temp.filter(e => e.resType !== "11115")
     if (filter.free) temp = temp.filter(e => e.active === "0" || !e.name)
 
     setWhatToShow(temp)
-  }, [filter])
+  }, [filter, x, y])
 
   const clickHandler = event => {
     setLoading(true)
@@ -69,7 +84,7 @@ export default function FindCropper() {
           <h3 className="text-info">Filter</h3>
 
           <Form>
-            <div className="mb-2">
+            <div className="mb-4">
               <Form.Check
                 inline
                 label="3339"
@@ -94,17 +109,52 @@ export default function FindCropper() {
                 onClick={() => setFilter({ ...filter, free: !filter.free })}
               />
             </div>
+            <Form.Label>
+              <h3 className="text-info">Coordinate</h3>
+            </Form.Label>
+            <Form.Row className="w-25">
+              <Form.Group as={Col}>
+                <InputGroup size="sm">
+                  <InputGroup.Prepend>
+                    <InputGroup.Text>
+                      <i>x</i>
+                    </InputGroup.Text>
+                  </InputGroup.Prepend>
+                  <Form.Control
+                    size="sm"
+                    type="string"
+                    onChange={e => setX(e.target.value)}
+                  />
+                </InputGroup>
+              </Form.Group>
+
+              <Form.Group as={Col}>
+                <InputGroup size="sm">
+                  <InputGroup.Prepend>
+                    <InputGroup.Text>
+                      <i>y</i>
+                    </InputGroup.Text>
+                  </InputGroup.Prepend>
+                  <Form.Control
+                    size="sm"
+                    type="string"
+                    onChange={e => setY(e.target.value)}
+                  />
+                </InputGroup>
+              </Form.Group>
+            </Form.Row>
           </Form>
         </div>
       )}
 
       {croppers.length > 0 && (
-        <div className="p-5">
+        <div className="pl-5 pr-5 pb-5 pt-3">
           <Table bordered hover size="sm">
             <thead>
               <tr>
                 <th>#</th>
                 <th>Coordinate</th>
+                <th>Distance</th>
                 <th>Village Name</th>
                 <th>Type</th>
                 <th>Bonus</th>
@@ -117,6 +167,7 @@ export default function FindCropper() {
                   <tr key={i}>
                     <td>{i + 1}</td>
                     <td>{cellIdToCoordinate(cropper.id)}</td>
+                    <td>{distance(cropper.id, x, y).toFixed(1)}</td>
                     {cropper.name ? (
                       <td>
                         {cropper.name} {cropper.active === "1" ? "" : "💤"}

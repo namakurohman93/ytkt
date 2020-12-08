@@ -1,11 +1,14 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Container from "react-bootstrap/Container"
 import Form from "react-bootstrap/Form"
 import Button from "react-bootstrap/Button"
 import Table from "react-bootstrap/Table"
 import Alert from "react-bootstrap/Alert"
+import InputGroup from "react-bootstrap/InputGroup"
+import Col from "react-bootstrap/Col"
 import CustomSpinner from "../components/custom-spinner"
 import httpClient from "../utilities/http-client"
+import distance from "../utilities/distance"
 import cellIdToCoordinate from "../utilities/cell-id-to-coordinate"
 
 export default function FindAnimals() {
@@ -13,6 +16,8 @@ export default function FindAnimals() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState([])
   const [error, setError] = useState(false)
+  const [x, setX] = useState(0)
+  const [y, setY] = useState(0)
 
   const animalsName = [
     "",
@@ -27,6 +32,23 @@ export default function FindAnimals() {
     "🐯",
     "🐘"
   ]
+
+  useEffect(() => {
+    let tempX, tempY
+
+    if (isNaN(Number(x))) tempX = 0
+    else tempX = x
+
+    if (isNaN(Number(y))) tempY = 0
+    else tempY = y
+
+    let data = result.map(e => {
+      return { ...e, distance: distance(e.id, tempX, tempY) }
+    })
+      .sort((a, b) => a.distance - b.distance)
+
+    setResult(data)
+  }, [x, y])
 
   const changeHandler = (isChecked, value) => {
     setError(false)
@@ -57,7 +79,15 @@ export default function FindAnimals() {
       }
 
       httpClient(options)
-        .then(({ data }) => setResult(data))
+        .then(({ data }) => {
+          data = data
+            .map(e => {
+              return { ...e, distance: distance(e.id, x, y) }
+            })
+            .sort((a, b) => a.distance - b.distance)
+
+          setResult(data)
+        })
         .catch(err => console.log(err))
         .finally(() => setLoading(false))
     }
@@ -189,32 +219,71 @@ export default function FindAnimals() {
       {loading && <CustomSpinner message="finding animals..." />}
 
       {result.length > 0 && (
-        <div className="ml-5 mt-5 mb-5">
-          <hr />
-          <h2 className="text-info">Result</h2>
-          <Table bordered hover>
-            <thead>
-              <tr>
-                <th>Coordinate</th>
-                <th>Animals</th>
-              </tr>
-            </thead>
-            <tbody>
-              {result.map((res, i) => {
-                return (
-                  <tr key={i}>
-                    <td>{cellIdToCoordinate(res.id)}</td>
-                    <td>
-                      {Object.keys(res.units)
-                        .map(key => `${animalsName[key]} ${res.units[key]}`)
-                        .join(" ")}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </Table>
-        </div>
+        <>
+          <Form className="pl-5 pt-5 pb-3">
+            <Form.Label>
+              <h3 className="text-info">Coordinate</h3>
+            </Form.Label>
+            <Form.Row className="w-25">
+              <Form.Group as={Col}>
+                <InputGroup size="sm">
+                  <InputGroup.Prepend>
+                    <InputGroup.Text>
+                      <i>x</i>
+                    </InputGroup.Text>
+                  </InputGroup.Prepend>
+                  <Form.Control
+                    size="sm"
+                    type="string"
+                    onChange={e => setX(e.target.value)}
+                  />
+                </InputGroup>
+              </Form.Group>
+
+              <Form.Group as={Col}>
+                <InputGroup size="sm">
+                  <InputGroup.Prepend>
+                    <InputGroup.Text>
+                      <i>y</i>
+                    </InputGroup.Text>
+                  </InputGroup.Prepend>
+                  <Form.Control
+                    size="sm"
+                    type="string"
+                    onChange={e => setY(e.target.value)}
+                  />
+                </InputGroup>
+              </Form.Group>
+            </Form.Row>
+          </Form>
+
+          <div className="ml-5 mb-5">
+            <Table bordered hover>
+              <thead>
+                <tr>
+                  <th>Distance</th>
+                  <th>Coordinate</th>
+                  <th>Animals</th>
+                </tr>
+              </thead>
+              <tbody>
+                {result.map((res, i) => {
+                  return (
+                    <tr key={i}>
+                      <td>{distance(res.id, x, y).toFixed(1)}</td>
+                      <td>{cellIdToCoordinate(res.id)}</td>
+                      <td>
+                        {Object.keys(res.units)
+                          .map(key => `${animalsName[key]} ${res.units[key]}`)
+                          .join(" ")}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </Table>
+          </div>
+        </>
       )}
     </Container>
   )

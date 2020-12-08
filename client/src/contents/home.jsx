@@ -2,8 +2,6 @@ import Container from "react-bootstrap/Container"
 import Jumbotron from "react-bootstrap/Jumbotron"
 import Badge from "react-bootstrap/Badge"
 
-// import "../styles/home.style.css"
-
 export default function Home(props) {
   const { setEventKey } = props
 
@@ -80,9 +78,6 @@ export default function Home(props) {
                 <span className="font-weight-light text-muted">
                   Find Cropper{" "}
                 </span>
-                <Badge pill variant="info">
-                  Incoming
-                </Badge>
               </a>
             </li>
             <li>
@@ -94,9 +89,6 @@ export default function Home(props) {
                 <span className="font-weight-light text-muted">
                   Attack Schedule{" "}
                 </span>
-                <Badge pill variant="info">
-                  Incoming
-                </Badge>
               </a>
             </li>
           </ul>
