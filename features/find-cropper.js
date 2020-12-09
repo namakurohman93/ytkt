@@ -47,7 +47,7 @@ module.exports = function() {
 
           cropper.bonusOases = cropper.bonusOases
             .sort((a, b) => b - a)
-            .filter((_, index) => index < 3)
+            .slice(0, 3)
             .reduce((a, oasis) => a + oasis, 0)
         })
 
