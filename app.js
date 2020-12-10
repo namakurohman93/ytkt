@@ -2,7 +2,7 @@ const express = require("express")
 const path = require("path")
 const app = express()
 
-// require("./models/init")
+require("./models/init")
 
 if (process.env.NODE_ENV == "development") {
   require("dotenv").config()

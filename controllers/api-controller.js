@@ -1,4 +1,4 @@
-// const { Op } = require("sequelize")
+const { Op } = require("sequelize")
 const cellId = require("../utilities/cell-id")
 const cronJob = require("../utilities/cron-job")
 const distance = require("../utilities/distance")
@@ -6,7 +6,7 @@ const createDate = require("../utilities/create-date")
 const authenticate = require("../features/login")
 const findInactive = require("../features/find-inactive")
 const { getState, setState } = require("../store")
-// const { models } = require("../models")
+const { models } = require("../models")
 const findAnimals = require("../features/find-animals")
 const searchCropper = require("../features/find-cropper")
 const scheduleAttack = require("../features/schedule-attack")
@@ -40,16 +40,14 @@ module.exports = {
           gameworldSession
         })
 
-        /*
-         * let { cronJob: cron } = getState()
-         *
-         * if (!cron.isRunning) {
-         *   let job = cronJob()
-         *   job.start()
-         *
-         *   setState({ cronJob: { isRunning: true, job } })
-         * }
-         */
+        let { cronJob: cron } = getState()
+
+        if (!cron.isRunning) {
+          let job = cronJob()
+          job.start()
+
+          setState({ cronJob: { isRunning: true, job } })
+        }
 
         res.json({
           response: {
@@ -66,64 +64,87 @@ module.exports = {
         })
       })
   },
-  searchPlayer: function(req, res) {
-    let { name } = req.query
+  getPlayers: function(req, res) {
+    let { max, day, hour } = req.query
 
-    if (!name.trim()) {
-      res.status(400).json({
-        error: true,
-        message: "Name is required"
-      })
-    } else {
-      let options = {
-        attributes: {
-          exclude: ["createdAt", "updatedAt", "kingdomId", "tribeId"]
-        },
-        where: {
-          name: {
-            [Op.like]: `%${name}%`
-          }
-        }
-      }
-
-      models.Player.findAll(options)
-        .then(players => res.json(players))
-        .catch(err => {
-          res.status(500).json({ error: true, message: "Internal error" })
-        })
-    }
-  },
-  getPlayerDetail: function(req, res) {
-    let { playerId: tkPlayerId } = req.params
+    if (!max) max = 0
+    if (!day) day = 1
+    if (!hour) hour = 0
 
     let options = {
+      where: {
+        createdAt: {
+          [Op.between]: [new Date(createDate(+day, +hour)), new Date()]
+        }
+      },
       attributes: {
-        exclude: ["createdAt", "updatedAt"]
+        exclude: ["updatedAt"]
       },
       include: [
         {
-          model: models.Kingdom,
-          attributes: ["name"]
-        },
-        {
-          model: models.Village,
-          attributes: ["tkCellId", "name", "owner", "resType"],
-          include: [
-            {
-              model: models.Population,
-              attributes: ["population", "createdAt"]
-            }
-          ]
+          model: models.Player,
+          attributes: ["id", "name", "tribeId", "kingdom", "isActive"]
         }
-      ],
-      where: { tkPlayerId },
-      order: [
-        [models.Village, "name", "asc"],
-        [models.Village, { model: models.Population }, "createdAt", "asc"]
       ]
     }
 
-    models.Player.findOne(options)
+    models.Population.findAll(options)
+      .then(result => {
+        let players = result
+          .map(r => r.toJSON())
+          .reduce((a, pop) => {
+            if (!a[pop.Player.id]) {
+              a[pop.Player.id] = { ...pop.Player, populations: [] }
+            }
+
+            let { id, population, createdAt } = pop
+
+            a[pop.Player.id].populations.push({ id, population, createdAt })
+
+            return a
+          }, {})
+
+        players = Object.values(players)
+          .map(player => {
+            let { id, name, tribeId, kingdom, isActive, populations } = player
+
+            populations = populations.sort((a, b) => {
+              return a.createdAt - b.createdAt
+            })
+
+            let evolution = 0
+
+            if (populations.length > 1) {
+              evolution = populations[populations.length - 1] - populations[0]
+            }
+
+            return { id, name, tribeId, kingdom, isActive, evolution }
+          })
+          .filter(player => player.evolution <= +max)
+
+        res.json(players)
+      })
+      .catch(err => {
+        console.log(err)
+        res.status(500).json({ error: true, message: "Internal error" })
+      })
+  },
+  getPlayerDetail: function(req, res) {
+    let { playerId } = req.params
+
+    let options = {
+      attributes: {
+        exclude: ["id", "createdAt", "updatedAt"]
+      },
+      include: [
+        {
+          model: models.Population,
+          attributes: ["population", "createdAt"]
+        }
+      ]
+    }
+
+    models.Player.findByPk(playerId, options)
       .then(player => res.json(player))
       .catch(err => {
         res.status(500).json({ error: true, message: "Internal error" })
