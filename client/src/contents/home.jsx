@@ -17,79 +17,52 @@ export default function Home(props) {
           <h2 className="text-info">Features</h2>
           <ul>
             <li>
-              <a
-                href="#"
-                className="text-decoration-none"
+              <span
+                role="button"
+                className="font-weight-light text-muted"
                 onClick={() => setEventKey("search")}
               >
-                <span className="font-weight-light text-muted">
-                  Search Player{" "}
-                </span>
-                <Badge pill variant="info">
-                  Incoming
+                Player Evolution{" "}
+                <Badge pill variant="warning">
+                  Beta
                 </Badge>
-              </a>
+              </span>
             </li>
             <li>
-              <a
-                href="#"
-                className="text-decoration-none"
-                onClick={() => setEventKey("search-kingdom")}
-              >
-                <span className="font-weight-light text-muted">
-                  Search Kingdom{" "}
-                </span>
-                <Badge pill variant="info">
-                  Incoming
-                </Badge>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="text-decoration-none"
-                onClick={() => setEventKey("search-inactive")}
-              >
-                <span className="font-weight-light text-muted">
-                  Search Inactive{" "}
-                </span>
-                <Badge pill variant="info">
-                  Incoming
-                </Badge>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="text-decoration-none"
+              <span
+                role="button"
+                className="font-weight-light text-muted"
                 onClick={() => setEventKey("find-animals")}
               >
-                <span className="font-weight-light text-muted">
-                  Find Animals{" "}
-                </span>
-              </a>
+                Find Animals{" "}
+                <Badge pill variant="warning">
+                  Beta
+                </Badge>
+              </span>
             </li>
             <li>
-              <a
-                href="#"
-                className="text-decoration-none"
+              <span
+                role="button"
+                className="font-weight-light text-muted"
                 onClick={() => setEventKey("find-cropper")}
               >
-                <span className="font-weight-light text-muted">
-                  Find Cropper{" "}
-                </span>
-              </a>
+                Find Cropper{" "}
+                <Badge pill variant="warning">
+                  Beta
+                </Badge>
+              </span>
             </li>
             <li>
-              <a
-                href="#"
-                className="text-decoration-none"
+              <span
+                role="button"
+                className="font-weight-light text-muted"
                 onClick={() => setEventKey("attack-schedule")}
               >
-                <span className="font-weight-light text-muted">
-                  Attack Schedule{" "}
-                </span>
-              </a>
+                Attack Schedule{" "}
+                <Badge pill variant="warning">
+                  Beta
+                </Badge>
+              </span>
             </li>
           </ul>
         </div>

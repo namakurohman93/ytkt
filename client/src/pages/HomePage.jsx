@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react"
 import Nav from "react-bootstrap/Nav"
+import Badge from "react-bootstrap/Badge"
 import Home from "../contents/home"
 import SearchPlayer from "../contents/search-player"
-import SearchKingdom from "../contents/search-kingdom"
-import SearchInactive from "../contents/search-inactive"
 import FindAnimals from "../contents/find-animals"
 import FindCropper from "../contents/find-cropper"
 import ScheduleAttack from "../contents/schedule-attack"
@@ -37,16 +36,15 @@ export default function HomePage() {
         onSelect={value => setEventKey(value)}
       >
         <Nav.Item>
-          <Nav.Link eventKey="home">ytkt</Nav.Link>
+          <Nav.Link eventKey="home">
+            ytkt{" "}
+            <Badge pill variant="warning">
+              Beta
+            </Badge>
+          </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="search">Search Player</Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link eventKey="search-kingdom">Search Kingdom</Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link eventKey="search-inactive">Search Inactive</Nav.Link>
+          <Nav.Link eventKey="search">Player Evolution</Nav.Link>
         </Nav.Item>
         <Nav.Item>
           <Nav.Link eventKey="find-animals">Find Animals</Nav.Link>
@@ -63,8 +61,6 @@ export default function HomePage() {
         <Home setEventKey={value => setEventKey(value)} />
       )}
       {eventKey === "search" && <SearchPlayer />}
-      {eventKey === "search-kingdom" && <SearchKingdom />}
-      {eventKey === "search-inactive" && <SearchInactive />}
       {eventKey === "find-animals" && <FindAnimals />}
       {eventKey === "find-cropper" && <FindCropper />}
       {eventKey === "attack-schedule" && (

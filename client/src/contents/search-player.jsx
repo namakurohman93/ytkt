@@ -1,101 +1,197 @@
 import { useState, useEffect } from "react"
 import Container from "react-bootstrap/Container"
+import Table from "react-bootstrap/Table"
+import Pagination from "react-bootstrap/Pagination"
 import Form from "react-bootstrap/Form"
+import Col from "react-bootstrap/Col"
+import Button from "react-bootstrap/Button"
 import InputGroup from "react-bootstrap/InputGroup"
-import Spinner from "react-bootstrap/Spinner"
-import PlayerList from "./player-list"
 import PlayerDetail from "./player-detail"
-import CustomError from "../components/custom-error"
 import httpClient from "../utilities/http-client"
 
+const tribes = ["", "Roman", "Teuton", "Gauls"]
+
 export default function SearchPlayer() {
-  const [playerName, setPlayerName] = useState("")
-  const [error, setError] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [playerList, setPlayerList] = useState(null)
+  const [playerList, setPlayerList] = useState([])
+  const [whatToShow, setWhatToShow] = useState([])
+  const [page, setPage] = useState(0)
+  const [lastPage, setLastPage] = useState(0)
+  const [formData, setFormData] = useState({
+    max: 0,
+    day: 1,
+    hour: 0,
+    loading: false
+  })
   const [playerId, setPlayerId] = useState(null)
-  const [showPlayer, setShowPlayer] = useState(false)
 
   useEffect(() => {
-    if (playerId !== null) setShowPlayer(true)
-  }, [playerId])
+    setWhatToShow(playerList.slice(20 * page, (page + 1) * 20))
+  }, [page, playerList])
 
-  const submitHandler = event => {
-    event.preventDefault()
-    setPlayerList(null)
-    setError(false)
-    setLoading(true)
-    setShowPlayer(false)
+  const prevButton = e => {
+    if (page !== 0) setPage(page - 1)
+  }
 
-    if (playerName.trim().length !== 0) {
-      httpClient
-        .get(`/api/players?name=${playerName}`)
-        .then(({ data }) => setPlayerList(data))
-        .catch(err => setError(true))
-        .finally(() => setLoading(false))
-    } else setLoading(false)
+  const nextButton = e => {
+    if (page !== lastPage - 1) setPage(page + 1)
+  }
+
+  const playerDetail = playerId => setPlayerId(playerId)
+
+  const inputChangeHandler = e => {
+    const { name, value } = e.target
+    setFormData({ ...formData, [name]: value })
+  }
+
+  const submitHandler = e => {
+    e.preventDefault()
+    setPlayerId(null)
+    setFormData({ ...formData, loading: true })
+
+    httpClient
+      .get(`/api/players`, {
+        params: {
+          max: formData.max,
+          day: formData.day,
+          hour: formData.hour
+        }
+      })
+      .then(({ data }) => {
+        setPlayerList(data)
+        setWhatToShow(data.slice(0, 20))
+        setLastPage(Math.ceil(data.length / 20))
+      })
+      .catch(err => console.log(err))
+      .finally(() => setFormData({ ...formData, loading: false }))
   }
 
   return (
     <Container>
       <div className="p-5">
-        <h1 className="text-info mb-0">Search Player</h1>
+        <h1 className="text-info mb-0">Player Evolution</h1>
         <p className="font-weight-lighter text-muted font-italic">
-          that you think is inactive
+          get the detail of player's evolution
         </p>
       </div>
 
-      <Form className="px-5" onSubmit={submitHandler}>
-        <Form.Row>
-          <InputGroup className="mb-2">
-            <InputGroup.Prepend>
-              {loading ? (
-                <InputGroup.Text className="px-5">
-                  <Spinner
-                    animation="border"
-                    role="status"
-                    as="span"
-                    size="sm"
-                  />
-                </InputGroup.Text>
-              ) : (
-                <InputGroup.Text>Player Name</InputGroup.Text>
-              )}
-            </InputGroup.Prepend>
-            <Form.Control
-              type="text"
-              placeholder="type name then press enter..."
-              onChange={e => setPlayerName(e.target.value)}
-              style={
-                playerName.length > 0
-                  ? { fontStyle: "normal" }
-                  : { fontStyle: "italic" }
-              }
-              disabled={loading}
-            />
-          </InputGroup>
-        </Form.Row>
-      </Form>
+      <div className="px-5 pb-5">
+        <Form onSubmit={submitHandler}>
+          <Form.Row className="w-50">
+            <Form.Group as={Col}>
+              <Form.Label className="text-info">Maximum Evolution</Form.Label>
+              <Form.Control
+                name="max"
+                size="sm"
+                type="number"
+                placeholder="max"
+                value={formData.max}
+                onChange={inputChangeHandler}
+                disabled={formData.loading}
+              />
+            </Form.Group>
 
-      {error && (
+            <Form.Group as={Col}>
+              <Form.Label className="text-info">Over</Form.Label>
+              <InputGroup size="sm">
+                <Form.Control
+                  name="day"
+                  size="sm"
+                  type="number"
+                  value={formData.day}
+                  onChange={inputChangeHandler}
+                  disabled={formData.loading}
+                />
+                <InputGroup.Prepend>
+                  <InputGroup.Text>Day</InputGroup.Text>
+                </InputGroup.Prepend>
+              </InputGroup>
+            </Form.Group>
+
+            <Form.Group as={Col}>
+              <Form.Label>&nbsp;</Form.Label>
+              <InputGroup size="sm">
+                <Form.Control
+                  name="hour"
+                  size="sm"
+                  type="number"
+                  value={formData.hour}
+                  onChange={inputChangeHandler}
+                  disabled={formData.loading}
+                />
+                <InputGroup.Prepend>
+                  <InputGroup.Text>Hour</InputGroup.Text>
+                </InputGroup.Prepend>
+              </InputGroup>
+            </Form.Group>
+          </Form.Row>
+
+          <Button
+            variant="info"
+            size="sm"
+            onClick={submitHandler}
+            type="submit"
+            disabled={formData.loading}
+          >
+            Filter
+          </Button>
+        </Form>
+      </div>
+
+      {playerId === null ? (
         <div className="px-5">
-          <CustomError setError={val => setError(val)} />
+          <Pagination>
+            <Pagination.Prev onClick={prevButton} />
+            <Pagination.Next onClick={nextButton} />
+            <Pagination.Item disabled className="text-muted font-italic">
+              {page + 1} of {lastPage}
+            </Pagination.Item>
+          </Pagination>
+
+          <Table bordered hover size="sm">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Tribe</th>
+                <th>Kingdom</th>
+                <th>Evolution</th>
+              </tr>
+            </thead>
+            <tbody>
+              {whatToShow.map((player, i) => {
+                return (
+                  <tr
+                    key={player.id}
+                    role="button"
+                    onClick={() => playerDetail(player.id)}
+                  >
+                    <td>{20 * page + (i + 1)}</td>
+                    <td>
+                      {player.name} {player.isActive ? "" : "💤"}
+                    </td>
+                    <td>{tribes[player.tribeId]}</td>
+                    <td>{player.kingdom}</td>
+                    <td>{player.evolution}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </Table>
+        </div>
+      ) : (
+        <div className="px-5">
+          <Button
+            variant="outline-info"
+            onClick={() => playerDetail(null)}
+          >
+            « Back
+          </Button>
+          
+          <div className="mt-3">
+            <PlayerDetail playerId={playerId} />
+          </div>
         </div>
       )}
-
-      {!showPlayer && playerList && playerList.length === 0 && (
-        <div className="px-5">
-          <p className="text-danger text-weight-lighter">no player found</p>
-        </div>
-      )}
-      {!showPlayer && playerList && playerList.length > 0 && (
-        <PlayerList
-          playerList={playerList}
-          setPlayerId={val => setPlayerId(val)}
-        />
-      )}
-
-      {showPlayer && <PlayerDetail playerId={playerId} />}
     </Container>
   )
 }

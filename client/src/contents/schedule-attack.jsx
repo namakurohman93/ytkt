@@ -11,8 +11,6 @@ import { staticUnit, staticBuilding } from "../constants"
 import cellIdToCoordinate from "../utilities/cell-id-to-coordinate"
 import httpClient from "../utilities/http-client"
 
-import "../styles/schedule-attack.style.css"
-
 export default function ScheduleAttack({ accountDetail }) {
   const { villages, tribeId } = accountDetail
 
@@ -74,29 +72,6 @@ export default function ScheduleAttack({ accountDetail }) {
       .then(({ data }) => setSchedule(data))
       .catch(err => console.log(err))
   }
-
-  const unitPopover = (id, units) => (
-    <Popover id={id}>
-      <Popover.Content>
-        <Table bordered size="sm">
-          <thead>
-            <tr>
-              <th>Legionaire</th>
-              <th>Praetorian</th>
-              <th>Imperian</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>1</td>
-              <td>1</td>
-            </tr>
-          </tbody>
-        </Table>
-      </Popover.Content>
-    </Popover>
-  )
 
   return (
     <Container>
@@ -243,7 +218,7 @@ export default function ScheduleAttack({ accountDetail }) {
                 <h5 className="text-info">Units</h5>
               </Form.Label>
               <Form.Row>
-                {staticUnit[villages[0].tribeId].map(unit => {
+                {staticUnit[tribeId].map(unit => {
                   return (
                     <Form.Group as={Col} key={unit.id}>
                       <Form.Label className="text-muted">
@@ -394,7 +369,7 @@ export default function ScheduleAttack({ accountDetail }) {
                         key="top"
                         overlay={
                           <Popover id={s.id} bsPrefix="custom-popover-body">
-                            <Popover.Content className="p-0 rounded">
+                            <Popover.Content className="p-0">
                               <Table
                                 size="sm"
                                 className="m-0"
@@ -403,7 +378,7 @@ export default function ScheduleAttack({ accountDetail }) {
                               >
                                 <thead>
                                   <tr>
-                                    {staticUnit[villages[0].tribeId].map(
+                                    {staticUnit[tribeId].map(
                                       unit => {
                                         return (
                                           <th key={unit.id}>{unit.name}</th>
