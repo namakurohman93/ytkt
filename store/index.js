@@ -12,7 +12,8 @@ let state = {
     isRunning: false,
     job: null
   },
-  scheduleAttacks: []
+  scheduleAttacks: [],
+  farmlists: []
 }
 
 if (process.env.NODE_ENV == "development") {

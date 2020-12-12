@@ -6,26 +6,32 @@ import SearchPlayer from "../contents/search-player"
 import FindAnimals from "../contents/find-animals"
 import FindCropper from "../contents/find-cropper"
 import ScheduleAttack from "../contents/schedule-attack"
+import FarmlistSender from "../contents/farmlist-sender"
+import CustomSpinner from "../components/custom-spinner"
 import httpClient from "../utilities/http-client"
 
 export default function HomePage() {
   const [eventKey, setEventKey] = useState("home")
   const [accountDetail, setAccountDetail] = useState({
     villages: null,
-    tribeId: null
+    tribeId: null,
+    farmlist: null
   })
 
   useEffect(() => {
     httpClient
-      .get(`/api/own-villages`)
+      .get(`/api/farmlist-village`)
       .then(({ data }) =>
         setAccountDetail({
-          villages: data,
-          tribeId: data[0].tribeId
+          villages: data.villages,
+          tribeId: data.villages[0].tribeId,
+          farmlist: data.farmlist
         })
       )
       .catch(err => console.log(err))
   }, [])
+
+  if (accountDetail.villages === null) return <CustomSpinner message="Fetching data..." />
 
   return (
     <>
@@ -55,6 +61,9 @@ export default function HomePage() {
         <Nav.Item>
           <Nav.Link eventKey="attack-schedule">Attack Schedule</Nav.Link>
         </Nav.Item>
+        <Nav.Item>
+          <Nav.Link eventKey="farmer">Farmlist Sender</Nav.Link>
+        </Nav.Item>
       </Nav>
 
       {eventKey === "home" && (
@@ -64,7 +73,16 @@ export default function HomePage() {
       {eventKey === "find-animals" && <FindAnimals />}
       {eventKey === "find-cropper" && <FindCropper />}
       {eventKey === "attack-schedule" && (
-        <ScheduleAttack accountDetail={accountDetail} />
+        <ScheduleAttack
+          villages={accountDetail.villages}
+          tribeId={accountDetail.tribeId}
+        />
+      )}
+      {eventKey === "farmer" && (
+        <FarmlistSender
+          villages={accountDetail.villages}
+          farmlist={accountDetail.farmlist}
+        />
       )}
     </>
   )

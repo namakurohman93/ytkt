@@ -64,6 +64,18 @@ export default function Home(props) {
                 </Badge>
               </span>
             </li>
+            <li>
+              <span
+                role="button"
+                className="font-weight-light text-muted"
+                onClick={() => setEventKey("farmer")}
+              >
+                Farmlist Sender{" "}
+                <Badge pill variant="warning">
+                  Beta
+                </Badge>
+              </span>
+            </li>
           </ul>
         </div>
       </Jumbotron>

@@ -11,9 +11,7 @@ import { staticUnit, staticBuilding } from "../constants"
 import cellIdToCoordinate from "../utilities/cell-id-to-coordinate"
 import httpClient from "../utilities/http-client"
 
-export default function ScheduleAttack({ accountDetail }) {
-  const { villages, tribeId } = accountDetail
-
+export default function ScheduleAttack({ villages, tribeId }) {
   const [loading, setLoading] = useState(false)
   const [schedule, setSchedule] = useState([])
   const [formData, setFormData] = useState({

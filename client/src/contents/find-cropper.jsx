@@ -32,7 +32,7 @@ export default function FindCropper() {
     else tempY = y
 
     let temp = [...croppers]
-      .map(e => ({ ...e, distance: distance(e.id, x, y) }))
+      .map(e => ({ ...e, distance: distance(e.id, tempX, tempY) }))
       .sort((a, b) => a.distance - b.distance)
 
     if (!filter.nine) temp = temp.filter(e => e.resType !== "3339")

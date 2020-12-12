@@ -8,7 +8,7 @@ module.exports = function() {
     let payload = {
       action: "get",
       controller: "cache",
-      params: { names: ["Collection:Village:own"] },
+      params: { names: ["Collection:Village:own", "Collection:FarmList:"] },
       session: gameworldSession
     }
     let options = { headers: { Cookie: cookies } }
@@ -18,13 +18,18 @@ module.exports = function() {
     httpClient
       .post(url, payload, options)
       .then(({ data }) => {
-        const villages = data.cache[0].data.cache.map(({ data }) => ({
-          villageId: data.villageId,
-          name: data.name,
-          tribeId: data.tribeId
-        }))
+        const villages = data.cache[0].data.cache.map(({ data }) => {
+          const { villageId, name, tribeId } = data
 
-        resolve(villages)
+          return { villageId, name, tribeId }
+        })
+        const farmlist = data.cache[1].data.cache.map(({ data }) => {
+          const { listId, listName, villageIds, entryIds } = data
+
+          return { listId, listName, villageIds, entryIds }
+        })
+
+        resolve({ villages, farmlist })
       })
       .catch(reject)
   })
