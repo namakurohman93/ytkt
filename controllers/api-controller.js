@@ -73,10 +73,7 @@ module.exports = {
     let options = {
       where: {
         createdAt: {
-          [Op.between]: [
-            new Date(createDate(+day, +hour)).toUTCString(),
-            new Date().toUTCString()
-          ]
+          [Op.gte]: new Date(createDate(+day, +hour)).toUTCString()
         }
       },
       attributes: {
@@ -117,7 +114,9 @@ module.exports = {
             let evolution = 0
 
             if (populations.length > 1) {
-              evolution = populations[populations.length - 1] - populations[0]
+              evolution =
+                populations[populations.length - 1].population -
+                populations[0].population
             }
 
             return { id, name, tribeId, kingdom, isActive, evolution }
@@ -127,7 +126,6 @@ module.exports = {
         res.json(players)
       })
       .catch(err => {
-        console.log(err)
         res.status(500).json({ error: true, message: "Internal error" })
       })
   },

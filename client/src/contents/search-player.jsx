@@ -46,6 +46,7 @@ export default function SearchPlayer() {
   const submitHandler = e => {
     e.preventDefault()
     setPlayerId(null)
+    setPage(0)
     setFormData({ ...formData, loading: true })
 
     httpClient

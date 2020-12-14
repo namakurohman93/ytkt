@@ -24,8 +24,6 @@ module.exports = function(date, units, target, villageId, catapultTargets = []) 
     task: setTimeout(({ id, units, target, villageId, catapultTargets }) => {
       sentAttack(units, target, villageId, catapultTargets)
         .then(data => {
-          console.log(data, "<<< data di schedule-attack.js")
-
           const { scheduleAttacks } = getState()
 
           scheduleAttacks.forEach(e => {
