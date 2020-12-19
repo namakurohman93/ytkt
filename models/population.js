@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize")
 
 module.exports = function(sequelize) {
-  sequelize.define("population", {
+  sequelize.define("Population", {
     id: {
       allowNull: false,
       autoIncrement: true,
@@ -11,6 +11,16 @@ module.exports = function(sequelize) {
     population: {
       allowNull: false,
       type: DataTypes.INTEGER
+    },
+    playerId: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+      references: {
+        model: "Players",
+        key: "id"
+      },
+      onUpdate: "cascade",
+      onDelete: "cascade"
     }
   })
 }

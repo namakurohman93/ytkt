@@ -1,6 +1,6 @@
 const { getState } = require("../store")
-const httpClient = require("./http-client")
-const regionIds = require("./region-ids")
+const httpClient = require("../utilities/http-client")
+const regionIds = require("../utilities/region-ids")
 
 module.exports = function() {
   return new Promise((resolve, reject) => {
@@ -16,11 +16,12 @@ module.exports = function() {
       },
       session: gameworldSession
     }
-    let options = { headers: { "Cookie": cookies } }
+    let options = { headers: { Cookie: cookies } }
     let date = Math.floor(Number(Date.now()) / 1000)
     let url = `https://${gameworld}.kingdoms.com/api/?c=map&a=getByRegionIds&t${date}=`
 
-    httpClient.post(url, payload, options)
+    httpClient
+      .post(url, payload, options)
       .then(({ data }) => resolve(data))
       .catch(reject)
   })

@@ -1,4 +1,4 @@
-const lodash = require("lodash")
+const merge = require("lodash/fp/merge")
 
 let state = {
   email: "",
@@ -11,7 +11,19 @@ let state = {
   cronJob: {
     isRunning: false,
     job: null
-  }
+  },
+  scheduleAttacks: [],
+  farmlists: []
+}
+
+if (process.env.NODE_ENV == "development") {
+  state.email = process.env.EMAIL
+  state.password = process.env.PASSWORD
+  state.gameworldName = process.env.GAMEWORLD_NAME
+  state.msid = process.env.MSID
+  state.cookies = process.env.COOKIES
+  state.lobbySession = process.env.LOBBY_SESSION
+  state.gameworldSession = process.env.GAMEWORLD_SESSION
 }
 
 function getState() {
@@ -19,7 +31,7 @@ function getState() {
 }
 
 function setState(newState) {
-  state = lodash.merge(state, newState)
+  state = merge(state, newState)
 }
 
 module.exports = { getState, setState }

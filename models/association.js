@@ -1,6 +1,6 @@
 module.exports = function(sequelize) {
-  const { player, population } = sequelize.models
+  const { models } = sequelize
 
-  player.hasMany(population)
-  population.belongsTo(player)
+  models.Player.hasMany(models.Population, { foreignKey: "playerId" })
+  models.Population.belongsTo(models.Player, { foreignKey: "playerId" })
 }

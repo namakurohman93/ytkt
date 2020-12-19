@@ -1,6 +1,8 @@
 const { Sequelize } = require("sequelize")
+
 const player = require("./player")
 const population = require("./population")
+
 const association = require("./association")
 
 const sequelize = new Sequelize({

@@ -1,19 +1,10 @@
-const { player, population } = require("./index").models
+const { models } = require("./index")
 
 function initTable() {
-  player.sync()
-    .then(() => console.log("Success sync player table"))
-    .catch(err => {
-      console.log(err)
-      console.log("Failed sync player table")
-    })
-
-  population.sync()
-    .then(() => console.log("Success sync population table"))
-    .catch(err => {
-      console.log(err)
-      console.log("Failed sync population table")
-    })
+  models.Player.sync()
+    .then(() => models.Population.sync())
+    .then(() => console.log("Success sync tables"))
+    .catch(err => console.log(err))
 }
 
 initTable()

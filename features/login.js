@@ -1,13 +1,16 @@
 const qs = require("qs")
-const httpClient = require("./http-client")
+const httpClient = require("../utilities/http-client")
 
 function loginToLobby({ email, password }) {
   return new Promise((resolve, reject) => {
     let msid, token
 
-    httpClient.get(`https://mellon-t5.traviangames.com/authentication/login/ajax/form-validate?`)
+    httpClient
+      .get(
+        `https://mellon-t5.traviangames.com/authentication/login/ajax/form-validate?`
+      )
       .then(({ data }) => {
-        let regex = /msid=(\w+)&msname/mg
+        let regex = /msid=(\w+)&msname/gm
         msid = regex.exec(data)[1]
 
         let options = {
@@ -45,8 +48,14 @@ function loginToLobby({ email, password }) {
         return httpClient(options)
       })
       .then(({ headers }) => {
-        let cookies = headers["set-cookie"].slice(2).map(parseCookie).join("") + `msid=${msid}; `
-        let lobbySession = headers.location.substring(headers.location.lastIndexOf("=") + 1)
+        let cookies =
+          headers["set-cookie"]
+            .slice(2)
+            .map(parseCookie)
+            .join("") + `msid=${msid}; `
+        let lobbySession = headers.location.substring(
+          headers.location.lastIndexOf("=") + 1
+        )
 
         resolve({ msid, cookies, lobbySession })
       })
@@ -60,11 +69,12 @@ function loginToGameworld({ gameworldName, lobbySession, msid, cookies }) {
 
     getGameworldId({ gameworldName, lobbySession, cookies })
       .then(gameworldId => {
-        if (!gameworldId) throw new Error(`Gameworld ${gameworldName} is not found`)
+        if (!gameworldId)
+          throw new Error(`Gameworld ${gameworldName} is not found`)
 
         let options = {
-          headers: { "Cookie": cookies },
-          params: { msname: "msid", msid },
+          headers: { Cookie: cookies },
+          params: { msname: "msid", msid }
         }
 
         return httpClient.get(
@@ -81,7 +91,7 @@ function loginToGameworld({ gameworldName, lobbySession, msid, cookies }) {
         let options = {
           url,
           method: "GET",
-          headers: { "Cookie": cookies }
+          headers: { Cookie: cookies }
         }
 
         return httpClient(options)
@@ -90,7 +100,7 @@ function loginToGameworld({ gameworldName, lobbySession, msid, cookies }) {
         let options = {
           method: "GET",
           maxRedirects: 0,
-          headers: { "Cookie": cookies },
+          headers: { Cookie: cookies },
           params: { token, msid, msname: "msid" },
           validateStatus: status => status >= 200 && status < 303,
           url: `https://${gameworldName}.kingdoms.com/api/login.php`
@@ -99,8 +109,11 @@ function loginToGameworld({ gameworldName, lobbySession, msid, cookies }) {
         return httpClient(options)
       })
       .then(({ headers }) => {
-        let fullCookies = cookies + headers["set-cookie"].map(parseCookie).join("")
-        let gameworldSession = headers.location.substring(headers.location.lastIndexOf("=") + 1)
+        let fullCookies =
+          cookies + headers["set-cookie"].map(parseCookie).join("")
+        let gameworldSession = headers.location.substring(
+          headers.location.lastIndexOf("=") + 1
+        )
 
         resolve({ msid, cookies: fullCookies, lobbySession, gameworldSession })
       })
@@ -117,9 +130,10 @@ function getGameworldId({ gameworldName, lobbySession, cookies }) {
       session: lobbySession
     }
 
-    let options = { headers: { "Cookie": cookies } }
+    let options = { headers: { Cookie: cookies } }
 
-    httpClient.post(`https://lobby.kingdoms.com/api/index.php`, data, options)
+    httpClient
+      .post(`https://lobby.kingdoms.com/api/index.php`, data, options)
       .then(({ data }) => {
         let gameworldId
 
@@ -147,14 +161,16 @@ function parseCookie(cookie) {
 function authenticate({ email, password, gameworld }) {
   return new Promise((resolve, reject) => {
     loginToLobby({ email, password })
-      .then(session => loginToGameworld({ ...session, gameworldName: gameworld }))
+      .then(session =>
+        loginToGameworld({ ...session, gameworldName: gameworld })
+      )
       .then(resolve)
       .catch(reject)
   })
 }
 
 function getToken(rawHtml) {
-  let regex = /token=(\w+)&msid/mg
+  let regex = /token=(\w+)&msid/gm
   return regex.exec(rawHtml)[1]
 }
 
