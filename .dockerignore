@@ -7,3 +7,4 @@ Dockerfile
 **/*.sqlite
 ./public
 .env
+.env.template
