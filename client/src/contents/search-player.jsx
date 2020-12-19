@@ -23,10 +23,17 @@ export default function SearchPlayer() {
     loading: false
   })
   const [playerId, setPlayerId] = useState(null)
+  const [filterInactive, setFilterInactive] = useState(false)
 
   useEffect(() => {
-    setWhatToShow(playerList.slice(20 * page, (page + 1) * 20))
-  }, [page, playerList])
+    if (filterInactive) {
+      let temp = playerList.filter(player => player.isActive)
+
+      setWhatToShow(temp.slice(20 * page, (page + 1) * 20))
+    } else {
+      setWhatToShow(playerList.slice(20 * page, (page + 1) * 20))
+    }
+  }, [page, playerList, filterInactive])
 
   const prevButton = e => {
     if (page !== 0) setPage(page - 1)
@@ -35,6 +42,8 @@ export default function SearchPlayer() {
   const nextButton = e => {
     if (page !== lastPage - 1) setPage(page + 1)
   }
+
+  const inactiveSwitchHandler = e => setFilterInactive(e.target.checked)
 
   const playerDetail = playerId => setPlayerId(playerId)
 
@@ -47,6 +56,8 @@ export default function SearchPlayer() {
     e.preventDefault()
     setPlayerId(null)
     setPage(0)
+    setFilterInactive(false)
+    setWhatToShow([])
     setFormData({ ...formData, loading: true })
 
     httpClient
@@ -146,6 +157,15 @@ export default function SearchPlayer() {
             <Pagination.Item disabled className="text-muted font-italic">
               {page + 1} of {lastPage}
             </Pagination.Item>
+
+            <div className="ml-5 my-auto">
+              <Form.Check
+                type="switch"
+                id="show-inactive-switch"
+                label="Filter Inactive"
+                onChange={inactiveSwitchHandler}
+              />
+            </div>
           </Pagination>
 
           <Table bordered hover size="sm">
@@ -181,13 +201,10 @@ export default function SearchPlayer() {
         </div>
       ) : (
         <div className="px-5">
-          <Button
-            variant="outline-info"
-            onClick={() => playerDetail(null)}
-          >
+          <Button variant="outline-info" onClick={() => playerDetail(null)}>
             « Back
           </Button>
-          
+
           <div className="mt-3">
             <PlayerDetail playerId={playerId} />
           </div>

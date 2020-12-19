@@ -28,7 +28,10 @@ export default function HomePage() {
           farmlist: data.farmlist
         })
       )
-      .catch(err => console.log(err))
+      .catch(err => {
+        console.log(err)
+        setAccountDetail({ villages: [], tribeId: 0, farmlist: [] })
+      })
   }, [])
 
   if (accountDetail.villages === null) return <CustomSpinner message="Fetching data..." />
