@@ -20,7 +20,7 @@ export PORT=80
 npm start
 ```
 
-Open your browser then access `localhost:<desired port>`
+Open your browser then access `localhost:80`
 
 ## Docker
 `ytkt` come with `Dockerfile`, so you can build an image docker. Or you can pull the image docker from docker hub. You can get `ytkt` image [here](https://hub.docker.com/r/didadadida93/ytkt).
@@ -47,6 +47,8 @@ docker container run \
 Open your browser then access `localhost:<desired port>`
 
 ## Development
+For development purpose, you need to generate session from Travian: Kingdom. The session need to be put on `.env` file. You can edit `.env.template` file and rename it to `.env` file. After that run these command
+
 ```sh
 npm run dev
 ```
