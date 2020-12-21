@@ -13,7 +13,9 @@ let state = {
     job: null
   },
   scheduleAttacks: [],
-  farmlists: []
+  farmlists: [],
+  isDual: false,
+  avatarName: ""
 }
 
 if (process.env.NODE_ENV == "development") {

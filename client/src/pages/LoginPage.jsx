@@ -9,27 +9,39 @@ import httpClient from "../utilities/http-client"
 const { NODE_ENV } = process.env
 
 export default function LoginPage({ setIsLogin, setSkipLogin }) {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [gameworld, setGameworld] = useState("")
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    gameworld: "",
+    isDual: false,
+    avatarName: ""
+  })
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
 
-  const submitHandler = event => {
-    event.preventDefault()
+  const submitHandler = e => {
+    e.preventDefault()
     setError(false)
     setLoading(true)
 
+    console.log(formData)
+
     httpClient
-      .post("/api/login", { email, password, gameworld })
-      .then(({ data }) => {
-        setEmail("")
-        setPassword("")
-        setGameworld("")
-        setIsLogin(data.response.isLogin)
-      })
+      .post("/api/login", formData)
+      .then(({ data }) => setIsLogin(data.response.isLogin))
       .catch(err => setError(true))
       .finally(() => setLoading(false))
+  }
+
+  const inputChangeHandler = e => {
+    const { name, value } = e.target
+    setFormData({ ...formData, [name]: value })
+  }
+
+  const selectChangeHandler = e => {
+    const { value } = e.target
+    setFormData({ ...formData, isDual: value === "dual" ? true : false })
   }
 
   return (
@@ -42,13 +54,19 @@ export default function LoginPage({ setIsLogin, setSkipLogin }) {
         </Button>
       )}
 
-      <Form className="mt-3">
+      <Form className="mt-3" onSubmit={submitHandler}>
         <Form.Group>
           <Form.Label>Email</Form.Label>
           <Form.Control
             type="email"
-            placeholder="Enter email"
-            onChange={e => setEmail(e.target.value)}
+            placeholder="example@email.com"
+            style={
+              formData.email.length > 0
+                ? { fontStyle: "normal" }
+                : { fontStyle: "italic" }
+            }
+            name="email"
+            onChange={inputChangeHandler}
             disabled={loading}
           />
         </Form.Group>
@@ -56,8 +74,14 @@ export default function LoginPage({ setIsLogin, setSkipLogin }) {
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
-            placeholder="Password"
-            onChange={e => setPassword(e.target.value)}
+            placeholder="dirty little secret"
+            style={
+              formData.password.length > 0
+                ? { fontStyle: "normal" }
+                : { fontStyle: "italic" }
+            }
+            name="password"
+            onChange={inputChangeHandler}
             disabled={loading}
           />
         </Form.Group>
@@ -65,11 +89,43 @@ export default function LoginPage({ setIsLogin, setSkipLogin }) {
           <Form.Label>Gameworld</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Gameworld"
-            onChange={e => setGameworld(e.target.value)}
+            placeholder="cz2"
+            style={
+              formData.gameworld.length > 0
+                ? { fontStyle: "normal" }
+                : { fontStyle: "italic" }
+            }
+            name="gameworld"
+            onChange={inputChangeHandler}
             disabled={loading}
           />
         </Form.Group>
+        <Form.Group>
+          <Form.Label>Account Type</Form.Label>
+          <Form.Control as="select" custom onChange={selectChangeHandler}>
+            <option value="primary">Primary</option>
+            <option value="dual">Dual</option>
+          </Form.Control>
+        </Form.Group>
+
+        {formData.isDual && (
+          <Form.Group>
+            <Form.Label>Avatar Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="RandomGuy"
+              style={
+                formData.avatarName.length > 0
+                  ? { fontStyle: "normal" }
+                  : { fontStyle: "italic" }
+              }
+              name="avatarName"
+              onChange={inputChangeHandler}
+              disabled={loading}
+            />
+          </Form.Group>
+        )}
+
         {loading ? (
           <Button variant="primary" disabled>
             <Spinner animation="border" role="status" as="span" size="sm" />{" "}

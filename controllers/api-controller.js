@@ -24,10 +24,10 @@ module.exports = {
     })
   },
   loginHandler: function(req, res) {
-    let { email, password, gameworld } = req.body
+    let { email, password, gameworld, isDual, avatarName } = req.body
     gameworld = gameworld.toLowerCase()
 
-    authenticate({ email, password, gameworld })
+    authenticate({ email, password, gameworld, isDual, avatarName })
       .then(({ msid, cookies, lobbySession, gameworldSession }) => {
         setState({
           email,
@@ -36,7 +36,9 @@ module.exports = {
           msid,
           cookies,
           lobbySession,
-          gameworldSession
+          gameworldSession,
+          isDual,
+          avatarName
         })
 
         let { cronJob: cron } = getState()

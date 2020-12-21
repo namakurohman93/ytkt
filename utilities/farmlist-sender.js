@@ -176,8 +176,8 @@ class FarmlistSender {
 
   reAuthenticate() {
     return new Promise((resolve, reject) => {
-      let { email, password, gameworldName: gameworld } = getState()
-      authenticate({ email, password, gameworld })
+      let { email, password, gameworldName: gameworld, isDual, avatarName } = getState()
+      authenticate({ email, password, gameworld, isDual, avatarName })
         .then(session => {
           setState({ ...session })
           resolve()

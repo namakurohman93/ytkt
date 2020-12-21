@@ -5,10 +5,7 @@ function loginToLobby({ email, password }) {
   return new Promise((resolve, reject) => {
     let msid, token
 
-    httpClient
-      .get(
-        `https://mellon-t5.traviangames.com/authentication/login/ajax/form-validate?`
-      )
+    httpClient.get(`https://mellon-t5.traviangames.com/authentication/login/ajax/form-validate?`)
       .then(({ data }) => {
         let regex = /msid=(\w+)&msname/gm
         msid = regex.exec(data)[1]
@@ -48,14 +45,12 @@ function loginToLobby({ email, password }) {
         return httpClient(options)
       })
       .then(({ headers }) => {
-        let cookies =
-          headers["set-cookie"]
-            .slice(2)
-            .map(parseCookie)
-            .join("") + `msid=${msid}; `
-        let lobbySession = headers.location.substring(
-          headers.location.lastIndexOf("=") + 1
-        )
+        let cookies = headers["set-cookie"]
+          .slice(2)
+          .map(parseCookie)
+          .join("") + `msid=${msid}; `
+        let lobbySession = headers.location
+          .substring(headers.location.lastIndexOf("=") + 1)
 
         resolve({ msid, cookies, lobbySession })
       })
@@ -65,8 +60,6 @@ function loginToLobby({ email, password }) {
 
 function loginToGameworld({ gameworldName, lobbySession, msid, cookies }) {
   return new Promise((resolve, reject) => {
-    let token
-
     getGameworldId({ gameworldName, lobbySession, cookies })
       .then(gameworldId => {
         if (!gameworldId)
@@ -82,20 +75,49 @@ function loginToGameworld({ gameworldName, lobbySession, msid, cookies }) {
           options
         )
       })
-      .then(({ data }) => {
-        token = getToken(data)
+      .then(({ data }) => step2Login({ data, gameworldName, lobbySession, msid, cookies }))
+      .then(resolve)
+      .catch(reject)
+  })
+}
 
-        let regex = /\b(https?:\/\/.*?\.[a-z]{2,4}\/[^\s]*\b)/g
-        let url = data.match(regex)[1]
+// login to gameworld as guest
+function _LTGAG({ gameworldName, avatarName, lobbySession, msid, cookies }) {
+  return new Promise((resolve, reject) => {
+    getAvatarId({ gameworldName, avatarName, lobbySession, cookies })
+      .then(avatarId => {
+        if (!avatarId) throw new Error(`Avatar ${avatarName} not found`)
 
         let options = {
-          url,
-          method: "GET",
-          headers: { Cookie: cookies }
+          headers: { Cookie: cookies },
+          params: { msname: "msid", msid }
         }
 
-        return httpClient(options)
+        return httpClient.get(
+          `https://mellon-t5.traviangames.com/game-world/join-as-guest/avatarId/${avatarId}`,
+          options
+        )
       })
+      .then(({ data }) => step2Login({ data, gameworldName, lobbySession, msid, cookies }))
+      .then(resolve)
+      .catch(reject)
+  })
+}
+
+function step2Login({ data, gameworldName, lobbySession, msid, cookies }) {
+  return new Promise((resolve, reject) => {
+    let token = getToken(data)
+
+    let regex = /\b(https?:\/\/.*?\.[a-z]{2,4}\/[^\s]*\b)/g
+    let url = data.match(regex)[1]
+
+    let options = {
+      url,
+      method: "GET",
+      headers: { Cookie: cookies }
+    }
+
+    httpClient(options)
       .then(_ => {
         let options = {
           method: "GET",
@@ -132,8 +154,7 @@ function getGameworldId({ gameworldName, lobbySession, cookies }) {
 
     let options = { headers: { Cookie: cookies } }
 
-    httpClient
-      .post(`https://lobby.kingdoms.com/api/index.php`, data, options)
+    httpClient.post(`https://lobby.kingdoms.com/api/index.php`, data, options)
       .then(({ data }) => {
         let gameworldId
 
@@ -149,6 +170,36 @@ function getGameworldId({ gameworldName, lobbySession, cookies }) {
   })
 }
 
+function getAvatarId({ gameworldName, lobbySession, cookies, avatarName }) {
+  return new Promise((resolve, reject) => {
+    let data = {
+      action: "get",
+      controller: "cache",
+      params: { names: ["Collection:Sitter:4"] },
+      session: lobbySession
+    }
+
+    let options = { headers: { Cookie: cookies } }
+
+    httpClient.post(`https://lobby.kingdoms.com/api/index.php`, data, options)
+      .then(({ data }) => {
+        let avatarId
+
+        data.cache[0].data.cache.forEach(avatar => {
+          if (
+            avatar.data.avatarName == avatarName &&
+            avatar.data.worldName.toLowerCase() == gameworldName
+          ) {
+            avatarId = avatar.data.avatarIdentifier
+          }
+        })
+
+        resolve(avatarId)
+      })
+      .catch(reject)
+  })
+}
+
 function parseCookie(cookie) {
   let uri = cookie.substring(0, cookie.indexOf(";") + 2)
   uri = uri.replace(new RegExp("%3A", "g"), ":")
@@ -158,12 +209,18 @@ function parseCookie(cookie) {
   return uri
 }
 
-function authenticate({ email, password, gameworld }) {
+function authenticate({ email, password, gameworld, isDual, avatarName }) {
   return new Promise((resolve, reject) => {
     loginToLobby({ email, password })
-      .then(session =>
-        loginToGameworld({ ...session, gameworldName: gameworld })
-      )
+      .then(session => {
+        if (isDual) {
+          return _LTGAG({
+            ...session,
+            gameworldName: gameworld,
+            avatarName
+          })
+        } else return loginToGameworld({ ...session, gameworldName: gameworld })
+      })
       .then(resolve)
       .catch(reject)
   })
