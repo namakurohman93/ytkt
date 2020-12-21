@@ -34,12 +34,9 @@ function consumeMapData() {
         const promises = Object.keys(data.response["1"].player)
           .filter(playerId => playerId != -1)
           .map(playerId => {
-            const {
-              name,
-              tribeId,
-              active,
-              kingdomId
-            } = data.response["1"].player[playerId]
+            const { name, tribeId, active, kingdomId } = data.response[
+              "1"
+            ].player[playerId]
 
             let kingdom = ""
 
@@ -73,13 +70,19 @@ async function task() {
     await consumeMapData()
   } catch (e) {
     if (e.error && e.error.message === "Authentication failed") {
-      let { email, password, gameworldName: gameworld } = getState()
+      let {
+        email,
+        password,
+        gameworldName: gameworld,
+        isDual,
+        avatarName
+      } = getState()
       let {
         msid,
         cookies,
         lobbySession,
         gameworldSession
-      } = await authenticate({ email, password, gameworld })
+      } = await authenticate({ email, password, gameworld, isDual, avatarName })
 
       setState({ msid, cookies, lobbySession, gameworldSession })
 
@@ -90,12 +93,14 @@ async function task() {
       } catch (e) {
         // alright i'm giving up
 
-        fs.writeFileSync(`./error-${Date.now()}.json`, JSON.stringify(e, null, 2))
+        fs.writeFileSync(
+          `./error-${Date.now()}.json`,
+          JSON.stringify(e, null, 2)
+        )
         console.log(`Error happening at ${new Date()}`)
         console.log(`This error is happen at second attempt`)
         console.log(e)
       }
-
     } else {
       fs.writeFileSync(`./error-${Date.now()}.json`, JSON.stringify(e, null, 2))
       console.log(`Error happening at ${new Date()}`)

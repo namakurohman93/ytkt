@@ -13,7 +13,9 @@ let state = {
     job: null
   },
   scheduleAttacks: [],
-  farmlists: []
+  farmlists: [],
+  isDual: false,
+  avatarName: ""
 }
 
 if (process.env.NODE_ENV == "development") {
@@ -24,6 +26,8 @@ if (process.env.NODE_ENV == "development") {
   state.cookies = process.env.COOKIES
   state.lobbySession = process.env.LOBBY_SESSION
   state.gameworldSession = process.env.GAMEWORLD_SESSION
+  state.isDual = process.env.IS_DUAL == "false" ? false : true
+  state.avatarName = process.env.AVATAR_NAME
 }
 
 function getState() {
