@@ -100,7 +100,12 @@ export default function LoginPage({ setIsLogin, setSkipLogin }) {
         </Form.Group>
         <Form.Group>
           <Form.Label>Account Type</Form.Label>
-          <Form.Control as="select" custom onChange={selectChangeHandler}>
+          <Form.Control
+            as="select"
+            custom
+            onChange={selectChangeHandler}
+            disabled={loading}
+          >
             <option value="primary">Primary</option>
             <option value="dual">Dual</option>
           </Form.Control>
