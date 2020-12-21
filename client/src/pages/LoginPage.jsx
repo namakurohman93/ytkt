@@ -25,8 +25,6 @@ export default function LoginPage({ setIsLogin, setSkipLogin }) {
     setError(false)
     setLoading(true)
 
-    console.log(formData)
-
     httpClient
       .post("/api/login", formData)
       .then(({ data }) => setIsLogin(data.response.isLogin))
