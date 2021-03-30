@@ -9,6 +9,7 @@ if (process.env.NODE_ENV == "development") {
   app.use(require("cors")())
 }
 
+app.set("x-powered-by", false)
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(express.static("public"))
